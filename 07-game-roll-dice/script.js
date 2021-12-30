@@ -18,46 +18,44 @@ let activePlayerNum = 0;
 let currentScore = 0;
 const scores = [0, 0];
 
-btnRollDice.addEventListener('pointerdown', (e) => {
-  dice.classList.remove('hidden'); // At the beginning of the game, dice is hidden
-  const diceScore = getRandom1To6();
-  changeDice(diceScore);
+let isGameInProgress = true;
 
-  if (diceScore !== 1) {
-    updatePlayerCurrentScore(activePlayerNum, diceScore);
-  } else {
-    currentScore = 0;
-    changeActivePlayer();
+btnRollDice.addEventListener('pointerdown', (e) => {
+  if (isGameInProgress) {
+    dice.classList.remove('hidden'); // At the beginning of the game, dice is hidden
+    const diceScore = getRandom1To6();
+    changeDice(diceScore);
+
+    if (diceScore !== 1) {
+      updatePlayerCurrentScore(diceScore);
+    } else {
+      currentScore = 0;
+      changeActivePlayer();
+    }
   }
 });
 
 btnHold.addEventListener('pointerdown', (e) => {
-  const totalScore = scores[activePlayerNum];
-  updatePlayerTotalScore(activePlayerNum, totalScore + currentScore);
-
-  if (totalScore + currentScore < 100) {
-    currentScore = 0;
-    changeActivePlayer();
-  } else {
-    alert(`Player ${activePlayerNum + 1} has won the game!`);
+  if (isGameInProgress) {
+    if (scores[activePlayerNum] + currentScore < 100) {
+      updatePlayerTotalScore();
+      changeActivePlayer();
+    } else {
+      finishGame();
+    }
   }
 });
 
 btnNewGame.addEventListener('pointerdown', startNewGame);
 
-function updatePlayerCurrentScore(playerNumber, diceScore) {
+function updatePlayerCurrentScore(diceScore) {
   currentScore += diceScore;
-
-  if (activePlayerNum === 0) {
-    player1CurrentScore.textContent = currentScore;
-  } else {
-    player2CurrentScore.textContent = currentScore;
-  }
+  document.querySelector(`#current--${activePlayerNum}`).textContent = currentScore;
 }
 
-function updatePlayerTotalScore(playerNumber, totalScore) {
-  scores[playerNumber] = totalScore;
-  document.querySelector(`#score--${playerNumber}`).textContent = totalScore;
+function updatePlayerTotalScore() {
+  scores[activePlayerNum] += currentScore;
+  document.querySelector(`#score--${activePlayerNum}`).textContent = scores[activePlayerNum];
 }
 
 function changeDice(diceScore) {
@@ -69,22 +67,31 @@ function getRandom1To6() {
 }
 
 function changeActivePlayer() {
-  activePlayerNum = Number(!activePlayerNum);
+  currentScore = 0;
   player1.classList.toggle('player--active');
   player2.classList.toggle('player--active');
-  player1CurrentScore.textContent = 0;
-  player2CurrentScore.textContent = 0;
+  document.querySelector(`#current--${activePlayerNum}`).textContent = 0;
+  activePlayerNum = Number(!activePlayerNum);
 }
 
 function startNewGame() {
+  isGameInProgress = true;
   dice.classList.add('hidden');
   activePlayerNum = 0;
 
   player1.classList.add('player--active');
-  player2.classList.remove('player--active');
+  player1.classList.remove('player--winner');
+  player2.classList.remove('player--active', 'player--winner');
 
   player1CurrentScore.textContent = 0;
   player2CurrentScore.textContent = 0;
   player1TotalScore.textContent = 0;
   player2TotalScore.textContent = 0;
+}
+
+function finishGame() {
+  document.querySelector(`.player--${activePlayerNum}`).classList.add('player--winner');
+  document.querySelector(`.player--${activePlayerNum}`).classList.remove('player--active');
+  dice.classList.add('hidden');
+  isGameInProgress = false;
 }
