@@ -19,33 +19,28 @@ let currentScore = 0;
 const scores = [0, 0];
 
 btnRollDice.addEventListener('pointerdown', (e) => {
-  if (dice.classList.contains('hidden')) {
-    dice.classList.remove('hidden');
-  }
-
+  dice.classList.remove('hidden'); // At the beginning of the game, dice is hidden
   const diceScore = getRandom1To6();
   changeDice(diceScore);
 
-  if (diceScore === 1) {
+  if (diceScore !== 1) {
+    updatePlayerCurrentScore(activePlayerNum, diceScore);
+  } else {
     currentScore = 0;
     changeActivePlayer();
-    return;
   }
-
-  updatePlayerCurrentScore(activePlayerNum, diceScore);
 });
 
 btnHold.addEventListener('pointerdown', (e) => {
   const totalScore = scores[activePlayerNum];
   updatePlayerTotalScore(activePlayerNum, totalScore + currentScore);
 
-  if (totalScore + currentScore >= 100) {
+  if (totalScore + currentScore < 100) {
+    currentScore = 0;
+    changeActivePlayer();
+  } else {
     alert(`Player ${activePlayerNum + 1} has won the game!`);
-    return;
   }
-
-  currentScore = 0;
-  changeActivePlayer();
 });
 
 btnNewGame.addEventListener('pointerdown', startNewGame);
