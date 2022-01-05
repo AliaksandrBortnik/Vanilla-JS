@@ -1,0 +1,10 @@
+1. ls - list all files
+2. cd .. - change directory to the parent one
+3. cd directory-name - change directory to the specific one
+4. clear / cmd+K - console clean up
+5. mkdir TEST - create a new folder
+6. touch index.html script.js - add a new file or some
+7. rm index.html - remove a file
+8. mv index.html .. - move a file to target location
+9. rmdir TEST - remove a directory (for empty folder only)
+9.1. rm -R TEST - remove recursively all files of the folder and the folder itself
