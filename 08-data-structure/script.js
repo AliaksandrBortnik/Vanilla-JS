@@ -242,8 +242,28 @@ document.querySelector('button').addEventListener('pointerdown', (event) => {
   const splittedRows = text.split('\n').map(row => row.trim());
 
   for (const [i, row] of splittedRows.entries()) {
-    const words = row.toLowerCase().split('_');
-    const outputRow = (words[0] + words[1][0].toUpperCase() + words[1].slice(1)).padEnd(20, ' ') + '✅'.repeat(i + 1);
+    const [firstWord, secondWord] = row.toLowerCase().split('_');
+    const outputRow = (firstWord + secondWord[0].toUpperCase() + secondWord.slice(1)).padEnd(20, ' ') + '✅'.repeat(i + 1);
     console.log(outputRow);
   }
 });
+
+// String Methods Practice
+const flights =
+  '_Delayed_Departure;fao93766109;txl2133758440;11:25+_Arrival;bru0943384722;fao93766109;11:45+_Delayed_Arrival;hel7439299980;fao93766109;12:05+_Departure;fao93766109;lis2323639855;12:30';
+
+const getAirportCode = (airport) => airport.slice(0, 3).toUpperCase();
+
+for (const flight of flights.split('+')) {
+  let [eventName, to, from, time] = flight.split(';');
+  eventName = eventName.replace(/_/g, ' ').trim();
+  to = getAirportCode(to);
+  from = getAirportCode(from);
+  time = time.replace(':', 'h');
+
+  if (eventName.startsWith('Delayed')) {
+    eventName = '⛔️' + eventName;
+  }
+
+  console.log(`${eventName} from ${from} to ${to} (${time})`.padStart(42));
+}
