@@ -13,8 +13,13 @@ console.log('Importing module')
 // console.log(ShoppingCart.totalPrice, ShoppingCart.tq)
 
 // 3. Import default
-import addToCart from "./shoppingCart.js";
-addToCart('pizza', 2);
+// import addToCart from "./shoppingCart.js";
+// addToCart('pizza', 2);
 
 // 4. Possible mix of default and named
-// import addToCart, { totalPrice, tq } from "./shoppingCart.js";
+import addToCart, {cart} from "./shoppingCart.js";
+addToCart('pizza', 2);
+addToCart('bread', 5);
+addToCart('apple', 4);
+
+console.log(cart)
