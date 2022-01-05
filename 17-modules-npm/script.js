@@ -23,3 +23,34 @@ addToCart('bread', 5);
 addToCart('apple', 4);
 
 console.log(cart)
+
+
+// 5. Top-level await import ES2022. No longer need async wrapper
+// const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+// const data = await res.json();
+// console.log(data);
+
+// async function getData() {
+//   console.warn('Start loading')
+//   const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+//   const data = await res.json();
+//   console.log(data);
+// }
+//
+// getData();
+
+// console.warn('Loaded')
+
+const getLastPost = async function() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const data = await res.json();
+  console.log(data);
+
+  return {
+    title: data.at(-1).title, // Array.prototype.at is a new feature of ES2022
+    text: data.at(-1).body
+  };
+}
+
+const lastPost = await getLastPost(); // Previously we were using .then()
+console.log(lastPost)
