@@ -54,3 +54,32 @@ const getLastPost = async function() {
 
 const lastPost = await getLastPost(); // Previously we were using .then()
 console.log(lastPost)
+
+// 6. Old-style module pattern. Used before ES modules
+// Module encapsulates private data and stuff and exposes public API
+// Module was simply a IIFE function
+const ShoppingCart = (function() {
+  const cart = [];
+  const shippingCost = 10;
+  const totalPrice = 237;
+  const totalQuantity = 23;
+
+  const addToCart = function (product, quantity) {
+    cart.push({ product, quantity });
+    console.log(`${quantity} ${product} added to cart`);
+  };
+
+  const orderStock = function (product, quantity) {
+    console.log(`${quantity} ${product} ordered from supplier`);
+  };
+
+  return {
+    cart,
+    totalPrice,
+    totalQuantity,
+    addToCart
+  };
+})();
+
+ShoppingCart.addToCart('apple', 2);
+console.log(ShoppingCart)
