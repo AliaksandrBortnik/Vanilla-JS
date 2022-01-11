@@ -78,8 +78,8 @@ const poll = {
 };
 
 /*
-1. Create a method called 'registerNewAnswer' on the 'poll' object. The method does 2 things:
-  1.1. Display a prompt window for the user to input the number of the selected option. The prompt should look like this:
+4.1. Create a method called 'registerNewAnswer' on the 'poll' object. The method does 2 things:
+  4.1.1. Display a prompt window for the user to input the number of the selected option. The prompt should look like this:
         What is your favourite programming language?
         0: JavaScript
         1: Python
@@ -87,8 +87,8 @@ const poll = {
         3: C++
         (Write option number)
 
-  1.2. Based on the input number, update the answers array. For example, if the option is 3, increase the value AT POSITION 3 of the array by 1. Make sure to check if the input is a number and if the number makes sense (e.g answer 52 wouldn't make sense, right?)
-4. Run the 'displayResults' method at the end of each 'registerNewAnswer' method call.
+  4.1.2. Based on the input number, update the answers array. For example, if the option is 3, increase the value AT POSITION 3 of the array by 1. Make sure to check if the input is a number and if the number makes sense (e.g answer 52 wouldn't make sense, right?)
+4.4. Run the 'displayResults' method at the end of each 'registerNewAnswer' method call.
 */
 poll.registerNewAnswer = function() {
   const answer = Number(prompt(`What is your favourite programming language?
@@ -107,11 +107,11 @@ poll.registerNewAnswer = function() {
   this.displayResults();
 }
 
-// 2. Call this method whenever the user clicks the "Answer poll" button.
+// 4.2. Call this method whenever the user clicks the "Answer poll" button.
 document.querySelector('.poll')
   .addEventListener('pointerdown', poll.registerNewAnswer.bind(poll));
 
-// 3. Create a method 'displayResults' which displays the poll results.
+// 4.3. Create a method 'displayResults' which displays the poll results.
 // The method takes a string as an input (called 'type'), which can be either 'string' or 'array'.
 // If type is 'array', simply display the results array as it is, using console.log().
 // This should be the default option. If type is 'string', display a string like "Poll results
@@ -133,3 +133,65 @@ display.apply({ answers: [1, 5, 3, 9, 6, 1] }, ['string']);
 // OR
 const displayBinded = poll.displayResults.bind({ answers: [5, 2, 3] });
 displayBinded();
+
+// 5. IIFE - Immediately Invoked Function Expression
+(function () {
+  console.log(' IIFE never run again')
+})();
+
+// 6. Closures
+// Example 1.
+const secureBooking = function() {
+  let passengerCount = 0;
+
+  return function() {
+    passengerCount++;
+    console.log(passengerCount);
+  }
+}
+
+const booker = secureBooking();
+console.dir(booker);
+booker();
+booker();
+booker();
+
+// Example 2.
+let f;
+
+const g = function() {
+  const a = 23;
+  f = function() {
+    console.log(a * 2);
+  }
+}
+
+const h = function() {
+  const b = 777;
+
+  f = function() {
+    console.log(b * 2)
+  }
+}
+
+g();
+f();
+console.dir(f);
+
+h();
+f();
+console.dir(f);
+
+const boardPassengers = function(n, wait) {
+  const perGroup = n / 3;
+
+  setTimeout(function() {
+    console.log(`We are now boarding all ${n} passengers`);
+    console.log(`There are 3 groups, each with ${perGroup} passengers`)
+  }, wait * 1000);
+
+  console.log(`Will start boarding in ${wait}`)
+}
+
+const perGroup = 1000; // It won't be used since scope chain has lower priority than a closure scope
+boardPassengers(30, 5);
