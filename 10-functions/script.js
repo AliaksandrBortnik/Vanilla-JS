@@ -195,3 +195,21 @@ const boardPassengers = function(n, wait) {
 
 const perGroup = 1000; // It won't be used since scope chain has lower priority than a closure scope
 boardPassengers(30, 5);
+
+// 7. Challenge 2
+/*
+Take the IIFE below and at the end of the function, attach an event listener that changes the color of the selected h1 element ('header') to blue, each time the BODY element is clicked. Do NOT select the h1 element again!
+*/
+(function () {
+  const header = document.querySelector('h1');
+  header.style.color = 'red';
+
+  document.body.addEventListener('pointerdown', () => {
+    console.warn('Called click handler - challenge 2');
+    header.style.color = 'blue';
+  });
+
+  console.warn('IIFE end - challenge 2')
+})();
+
+console.warn('outside IIFE - challenge 2')
