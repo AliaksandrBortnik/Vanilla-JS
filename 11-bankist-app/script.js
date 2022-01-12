@@ -60,3 +60,46 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
+
+const displayMovements = function (movements) {
+  containerMovements.innerHTML = ''; // Clean up currently displayed items
+
+  movements.forEach((mov, i) => {
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+
+    // TODO: add date in template
+    const rowTemplate = `
+      <div class="movements__row">
+        <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+        <div class="movements__date">3 days ago</div>
+        <div class="movements__value">${mov}€</div>
+      </div>
+    `;
+
+    // const element = document.createElement('div');
+    // element.innerHTML = rowTemplate;
+    // containerMovements.append(element.firstElementChild);
+
+    containerMovements.insertAdjacentHTML('afterbegin', rowTemplate);
+
+    // const element = document.createElement('div');
+    // element.classList.add('movements__row');
+    //
+    // const movementType = document.createElement('div');
+    // movementType.className = 'movements__type movements__type--deposit';
+    // movementType.textContent = '2 deposit'; // TODO: replace
+    //
+    // const movementDate = document.createElement('div');
+    // movementDate.className = 'movements__date';
+    // movementDate.textContent = '3 days ago'; // TODO: replace
+    //
+    // const movementValue = document.createElement('div');
+    // movementValue.className = 'movements__value';
+    // movementValue.textContent = '4 000€'; // TODO: replace
+    //
+    // element.append(movementType, movementDate, movementValue);
+    // containerMovements.append(element);
+  });
+}
+
+displayMovements(account1.movements);
