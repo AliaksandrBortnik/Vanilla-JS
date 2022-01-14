@@ -187,3 +187,18 @@ btnTransfer.addEventListener('click', (e) => {
   updateUI(currentAccount);
   inputTransferTo.value = inputTransferAmount.value = '';
 });
+
+btnClose.addEventListener('click', (e) => {
+  const username = inputCloseUsername.value;
+  const pin = inputClosePin.value;
+
+  if (currentAccount.username === username && currentAccount.pin === pin) {
+    const accountIndexToRemove = accounts.findIndex(acc =>
+      acc.username === username && acc.pin === pin);
+    accounts.splice(accountIndexToRemove, 1);
+
+    labelWelcome.textContent = 'Log in to get started';
+    containerApp.style.opacity = 0;
+    inputCloseUsername.value = inputClosePin.value = '';
+  }
+});
