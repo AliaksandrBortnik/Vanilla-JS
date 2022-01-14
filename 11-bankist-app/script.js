@@ -61,9 +61,9 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 let currentAccount;
 
-const calcPrintBalance = function (movements) {
-  const balance = movements.reduce((accum, mov) => accum += mov, 0);
-  labelBalance.textContent = balance + '€';
+const calcPrintBalance = function (account) {
+  account.balance = account.movements.reduce((accum, mov) => accum += mov, 0);
+  labelBalance.textContent = account.balance + '€';
 }
 
 const createUsernames = function (accounts) {
@@ -126,6 +126,12 @@ const displayGreeting = () => {
   resetLogin();
 };
 
+const updateUI = (account) => {
+  displayMovements(account.movements);
+  calcPrintBalance(account);
+  calcDisplaySummary(account);
+}
+
 // EVENT HANDLERS
 const onLogin = (e) => {
   e.preventDefault(); // Stop submitting the form with a page reload
@@ -136,14 +142,48 @@ const onLogin = (e) => {
 
   if (currentAccount) {
     displayGreeting();
-    displayMovements(currentAccount.movements);
-    calcPrintBalance(currentAccount.movements);
-    calcDisplaySummary(currentAccount);
+    updateUI(currentAccount);
   }
-}
+};
 
 btnLogin.addEventListener('click', onLogin);
 
 const enterPressed = (e) => e.key === 'Enter' && onLogin(e);
 inputLoginUsername.addEventListener('keypress', enterPressed);
 inputLoginPin.addEventListener('keypress', enterPressed);
+
+btnTransfer.addEventListener('click', (e) => {
+  e.preventDefault();
+
+  const amount = Number(inputTransferAmount.value);
+
+  if (amount <= 0) {
+    alert('Amount should be positive.')
+    return;
+  }
+
+  if (amount > currentAccount.balance) {
+    alert('Your account must have enough money.')
+    return;
+  }
+
+  const toAccount = inputTransferTo.value;
+
+  if (toAccount === currentAccount.username) {
+    alert('You cannot transfer money to yourself.')
+    return;
+  }
+
+  const account = accounts.find(acc => acc.username === toAccount);
+
+  if (!account) {
+    alert(`Receive account is not found.`)
+    return;
+  }
+
+  currentAccount.movements.push(-amount);
+  account.movements.push(amount);
+
+  updateUI(currentAccount);
+  inputTransferTo.value = inputTransferAmount.value = '';
+});
