@@ -1,7 +1,5 @@
 'use strict';
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
 // BANKIST APP
 
 // Data
@@ -61,6 +59,22 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+let currentAccount;
+
+const calcPrintBalance = function (movements) {
+  const balance = movements.reduce((accum, mov) => accum += mov, 0);
+  labelBalance.textContent = balance + '€';
+}
+
+const createUsernames = function (accounts) {
+  accounts.forEach(account => { // Side effect - mutating the original value
+    account.username = account.owner.toLowerCase()
+      .split(' ')
+      .map(word => word[0])
+      .join('');
+  });
+}
+
 const displayMovements = function (movements) {
   containerMovements.innerHTML = ''; // Clean up currently displayed items
 
@@ -76,30 +90,60 @@ const displayMovements = function (movements) {
       </div>
     `;
 
-    // const element = document.createElement('div');
-    // element.innerHTML = rowTemplate;
-    // containerMovements.append(element.firstElementChild);
-
     containerMovements.insertAdjacentHTML('afterbegin', rowTemplate);
-
-    // const element = document.createElement('div');
-    // element.classList.add('movements__row');
-    //
-    // const movementType = document.createElement('div');
-    // movementType.className = 'movements__type movements__type--deposit';
-    // movementType.textContent = '2 deposit'; // TODO: replace
-    //
-    // const movementDate = document.createElement('div');
-    // movementDate.className = 'movements__date';
-    // movementDate.textContent = '3 days ago'; // TODO: replace
-    //
-    // const movementValue = document.createElement('div');
-    // movementValue.className = 'movements__value';
-    // movementValue.textContent = '4 000€'; // TODO: replace
-    //
-    // element.append(movementType, movementDate, movementValue);
-    // containerMovements.append(element);
   });
 }
 
-displayMovements(account1.movements);
+const calcDisplaySummary = function (account) {
+  const sumIn = account.movements
+    .filter(mov => mov > 0)
+    .reduce((accum, mov) => accum + mov, 0);
+
+  labelSumIn.textContent = `${sumIn}€`;
+
+  const sumOut = account.movements
+    .filter(mov => mov < 0)
+    .reduce((accum, mov) => accum + mov, 0);
+
+  labelSumOut.textContent = `${sumOut}€`;
+
+  const sumInterest = sumIn > Math.abs(sumOut) ? sumIn - Math.abs(sumOut) : 0;
+  labelSumInterest.textContent = `${sumInterest * account.interestRate / 100}€`;
+};
+
+createUsernames(accounts);
+
+const resetLogin = () => {
+  inputLoginPin.value = '';
+  inputLoginUsername.value = '';
+  inputLoginPin.blur();
+  inputLoginUsername.blur();
+}
+
+const displayGreeting = () => {
+  labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`;
+  containerApp.style.opacity = 1;
+  resetLogin();
+};
+
+// EVENT HANDLERS
+const onLogin = (e) => {
+  e.preventDefault(); // Stop submitting the form with a page reload
+  const login = inputLoginUsername.value;
+  const pin = Number(inputLoginPin.value);
+
+  currentAccount = accounts.find(acc => acc.username === login && acc.pin === pin);
+
+  if (currentAccount) {
+    displayGreeting();
+    displayMovements(currentAccount.movements);
+    calcPrintBalance(currentAccount.movements);
+    calcDisplaySummary(currentAccount);
+  }
+}
+
+btnLogin.addEventListener('click', onLogin);
+
+const enterPressed = (e) => e.key === 'Enter' && onLogin();
+inputLoginUsername.addEventListener('keypress', enterPressed);
+inputLoginPin.addEventListener('keypress', enterPressed);
