@@ -144,6 +144,6 @@ const onLogin = (e) => {
 
 btnLogin.addEventListener('click', onLogin);
 
-const enterPressed = (e) => e.key === 'Enter' && onLogin();
+const enterPressed = (e) => e.key === 'Enter' && onLogin(e);
 inputLoginUsername.addEventListener('keypress', enterPressed);
 inputLoginPin.addEventListener('keypress', enterPressed);
