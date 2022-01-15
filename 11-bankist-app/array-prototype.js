@@ -88,6 +88,69 @@ const highestMovement = movements.reduce((currentMax, value) =>
 
 console.warn(`Highest using reduce: ${highestMovement}`);
 
+// 11. Method chaining
+const totalDepositsUSD = movements
+  .filter(mov => mov > 0)
+  .map(mov => mov * eurToUsd)
+  .reduce((sum, mov) => sum + mov, 0);
+
+// 12. find
+const firstWithdrawal = movements.find(mov => mov < 0);
+const account = accounts.find(account => account.owner === 'Jess');
+
+// 13. findIndex
+const accountIndex = accounts.findIndex(account => account.username === 'js');
+accounts.splice(accountIndex, 1);
+
+// 14. some
+const hasWithdrawal = movements.some(m => m < 0);
+
+// 15. every
+const isDeposit = m => m > 0;
+const isOnlyDeposits = movements.every(isDeposit);
+
+// 16. includes
+console.log(movements.includes(-10000));
+
+// 17. flat ES2019
+const flatten = [[1, 2, [3, 4]], 5].flat(2); // 1 is default
+
+// 18. flatMap ES2019
+const overallBalance = accounts
+  // .map(acc => acc.movements)
+  // .flat()
+  .flatMap(acc => acc.movements) // flat + map, 2 in 1. Note: 1 depth only
+  .reduce((accum, mov) => accum + mov, 0);
+
+// 19. sort
+const sortedOwnersByName = accounts.map(acc => acc.owner).sort(); // string based sorting
+const sortedAccountsByInterestRate = accounts.sort((acc1, acc2) => acc1.interestRate - acc2.interestRate);
+
+// 20. fill new array
+const arr = new Array(10); // arrayLength. 10 empty values
+arr.fill('s8');
+
+const filledArr = Array.from({ length: 10 }, (_, i) => i + 1);
+
+const movementsUI = Array.from(
+  document.querySelectorAll('.movements__value'),
+  el => Number(el.textContent.replace('€', '')));
+
+
+// All together
+const bankDepositSum = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov > 0)
+  .reduce((accum, mov) => accum + mov, 0);
+
+const {deposits, withdrawals} = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((sums, cur) => {
+    sums[cur > 0 ? 'deposits' : 'withdrawals'] += 1;
+    return sums;
+  }, {deposits: 0, withdrawals: 0});
+
+
 // Coding Challenge #1
 /*
 Julia and Kate are doing a study on dogs. So each of them asked 5 dog owners about their dog's age, and stored the data into an array (one array for each).
@@ -121,7 +184,7 @@ checkDogs([3, 5, 2, 12, 7], [4, 1, 15, 8, 3]);
 checkDogs([9, 16, 6, 8, 3],[10, 5, 6, 1, 4]);
 
 
-// Coding Challenge #2
+// Coding Challenge #2 and #3 (rewrite using arrow function)
 // Let's go back to Julia and Kate's study about dogs. This time, they want to convert dog ages to human ages and calculate the average age of the dogs in their study.
 // Create a function 'calcAverageHumanAge', which accepts an arrays of dog's ages ('ages'), and does the following things in order:
 
@@ -142,3 +205,36 @@ const calcAverageHumanAge = (ages) => {
 // TEST DATA 2: [16, 6, 10, 5, 6, 1, 4]
 calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
 calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
+
+
+// Coding Challenge #4
+/*
+Julia and Kate are still studying dogs, and this time they are studying if dogs are eating too much or too little.
+Eating too much means the dog's current food portion is larger than the recommended portion, and eating too little is the opposite.
+Eating an okay amount means the dog's current food portion is within a range 10% above and 10% below the recommended portion (see hint).
+HINT 1: Use many different tools to solve these challenges, you can use the summary lecture to choose between them 😉
+HINT 2: Being within a range 10% above and below the recommended portion means: current > (recommended * 0.90) && current < (recommended * 1.10). Basically, the current portion should be between 90% and 110% of the recommended portion.
+TEST DATA:
+const dogs = [
+  { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
+  { weight: 8, curFood: 200, owners: ['Matilda'] },
+  { weight: 13, curFood: 275, owners: ['Sarah', 'John'] },
+  { weight: 32, curFood: 340, owners: ['Michael'] }
+];
+*/
+
+// 1. Loop over the array containing dog objects, and for each dog, calculate the recommended food portion and add it to the object as a new property. Do NOT create a new array, simply loop over the array. Forumla: recommendedFood = weight ** 0.75 * 28. (The result is in grams of food, and the weight needs to be in kg)
+
+// 2. Find Sarah's dog and log to the console whether it's eating too much or too little. HINT: Some dogs have multiple owners, so you first need to find Sarah in the owners array, and so this one is a bit tricky (on purpose) 🤓
+
+// 3. Create an array containing all owners of dogs who eat too much ('ownersEatTooMuch') and an array with all owners of dogs who eat too little ('ownersEatTooLittle').
+
+// 4. Log a string to the console for each array created in 3., like this: "Matilda and Alice and Bob's dogs eat too much!" and "Sarah and John and Michael's dogs eat too little!"
+
+// 5. Log to the console whether there is any dog eating EXACTLY the amount of food that is recommended (just true or false)
+
+// 6. Log to the console whether there is any dog eating an OKAY amount of food (just true or false)
+
+// 7. Create an array containing the dogs that are eating an OKAY amount of food (try to reuse the condition used in 6.)
+
+// 8. Create a shallow copy of the dogs array and sort it by recommended food portion in an ascending order (keep in mind that the portions are inside the array's objects)
