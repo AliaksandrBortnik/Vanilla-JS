@@ -60,6 +60,7 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 let currentAccount;
+let isSorted = false;
 
 const calcPrintBalance = function (account) {
   account.balance = account.movements.reduce((accum, mov) => accum += mov, 0);
@@ -75,10 +76,13 @@ const createUsernames = function (accounts) {
   });
 }
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = ''; // Clean up currently displayed items
 
-  movements.forEach((mov, i) => {
+  const movs = sort ? movements.slice().sort((a, b) => a - b)
+    : movements;
+
+  movs.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     // TODO: add date in template
@@ -201,4 +205,21 @@ btnClose.addEventListener('click', (e) => {
     containerApp.style.opacity = 0;
     inputCloseUsername.value = inputClosePin.value = '';
   }
+});
+
+btnLoan.addEventListener('click', (e) => {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+  }
+
+  inputLoanAmount.value = '';
+});
+
+btnSort.addEventListener('click', (e) => {
+  isSorted = !isSorted;
+  displayMovements(currentAccount.movements, isSorted);
 });
