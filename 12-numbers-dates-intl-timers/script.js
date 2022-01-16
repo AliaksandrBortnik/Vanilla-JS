@@ -44,3 +44,30 @@ const account2 = {
 
 const accounts = [account1, account2];
 
+/// Refresh knowledge
+console.log(23 === 23.0); // false
+console.log(0.1 + 0.2); // 3.0000000000004
+console.log(0.1 + 0.2 === 0.3); // false
+
+// Conversion
+console.log(Number('55'));
+console.log(+'77');
+
+// Parsing
+console.log(Number.parseInt('5.25'));
+console.log(Number.parseFloat('5.25'));
+
+console.log(Number.parseInt('10px'));
+console.log(Number.parseFloat('10px'));
+
+console.log(Number.parseFloat('  1.15rem  '));
+console.log(Number.parseInt('1000', 2));
+
+// Not a Number - NaN
+console.log(Number.isNaN(20));
+console.log(Number.isNaN(23 / 0));
+console.log(Number.isNaN(+'e123')); // true
+
+// Check if a value is number except infinity
+console.log(Number.isFinite(10.5)); // true
+console.log(Number.isFinite('17')); // false
