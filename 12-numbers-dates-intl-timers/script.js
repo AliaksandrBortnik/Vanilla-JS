@@ -71,3 +71,7 @@ console.log(Number.isNaN(+'e123')); // true
 // Check if a value is number except infinity
 console.log(Number.isFinite(10.5)); // true
 console.log(Number.isFinite('17')); // false
+
+// Check if a value is integer
+console.log(Number.isInteger(10.5)); // false
+console.log(Number.isInteger(10)); // true
