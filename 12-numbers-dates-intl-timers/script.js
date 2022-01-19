@@ -141,3 +141,11 @@ console.log(date);
 
 console.log(typeof now); // object
 console.log(Date.now());
+
+const plannedDate = new Date(2030, 1, 1);
+console.log(Number(plannedDate));
+
+const calcDaysBetween = (date1, date2) =>
+  Math.trunc((Math.abs(date1 - date2)) / 1000 / 3600 / 24);
+
+console.warn('Days between: ' + calcDaysBetween(new Date(2022,1, 4), new Date(2022, 1, 25)));
