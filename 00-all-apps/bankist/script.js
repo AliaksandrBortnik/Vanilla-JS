@@ -88,6 +88,22 @@ const createUsernames = function (accounts) {
   });
 }
 
+const formatMovementDate = (date) => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  const fullDate = `${day}/${month}/${year}`;
+
+  const calcDaysBetween = (date1, date2) =>
+    Math.trunc((Math.abs(date1 - date2)) / 1000 / 3600 / 24);
+
+  const daysPassed = calcDaysBetween(new Date(), date);
+  return daysPassed === 0 ? 'Today'
+    : daysPassed === 1 ? 'Yesterday'
+      : daysPassed <= 7 ? `${daysPassed} days ago`
+        : fullDate;
+}
+
 const displayMovements = function (account, sort = false) {
   containerMovements.innerHTML = ''; // Clean up currently displayed items
 
@@ -96,13 +112,7 @@ const displayMovements = function (account, sort = false) {
 
   movs.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
-
-    const date = new Date(account.movementsDates[i]);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    const displayDate = `${day}/${month}/${year}`;
-
+    const displayDate = formatMovementDate(new Date(account.movementsDates[i]));
     const rowTemplate = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
