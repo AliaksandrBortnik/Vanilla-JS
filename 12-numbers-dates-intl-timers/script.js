@@ -88,9 +88,7 @@ console.log(Math.max(1, 5, 8, 2, '77')); // Doesn't parse, but convert to number
 console.log(Math.PI);
 console.log(Math.PI * Number.parseFloat('5px') ** 2);
 
-const randomInt = (min, max) =>
-  Math.floor(Math.random() * (max - min) + 1) + min;
-
+const randomInt = (min, max) => Math.floor(Math.random() * (max - min) + 1) + min;
 console.log(randomInt(2, 5));
 
 // Math.round, Math.ceil, Math.trunc, Math.floor
@@ -101,3 +99,20 @@ console.log(7 % 2, 7 / 2);
 // 4. Numeric separator for huge number
 console.log(2_123_456_000_000);
 
+// 5. BigInt - ES2020
+console.log(2 ** 53 - 1); // max safe value for number
+console.log(Number.MAX_SAFE_INTEGER);
+// if value is higher, precision might be lost
+
+// Use n or BigInt
+console.log(1235000000053455000005555500555n); // n - postfix to make a value as BigInt
+console.log(BigInt(7777333444));
+
+const huge = 12222333333444555555888888888889999999n;
+const multiplier = 5;
+console.log(huge * BigInt(multiplier)); // explicit convertion is required, otherwise error of type mixing
+
+console.log(15n > 5); // true
+console.log(15n == 15); // true
+console.log(typeof 15n); // "bigint"
+console.log(10n / 3n); // 3, not like 3.33333333335
