@@ -44,6 +44,8 @@ const account2 = {
 
 const accounts = [account1, account2];
 
+// 1. Number API
+
 /// Refresh knowledge
 console.log(23 === 23.0); // false
 console.log(0.1 + 0.2); // 3.0000000000004
@@ -75,3 +77,27 @@ console.log(Number.isFinite('17')); // false
 // Check if a value is integer
 console.log(Number.isInteger(10.5)); // false
 console.log(Number.isInteger(10)); // true
+
+
+// 2. Math
+console.log(Math.sqrt(25));
+console.log(25 ** (1 / 2));
+console.log(27 ** (1 / 3));
+console.log(Math.max(1, 5, 8, 2, 77));
+console.log(Math.max(1, 5, 8, 2, '77')); // Doesn't parse, but convert to number
+console.log(Math.PI);
+console.log(Math.PI * Number.parseFloat('5px') ** 2);
+
+const randomInt = (min, max) =>
+  Math.floor(Math.random() * (max - min) + 1) + min;
+
+console.log(randomInt(2, 5));
+
+// Math.round, Math.ceil, Math.trunc, Math.floor
+
+// 3. Remainder
+console.log(7 % 2, 7 / 2);
+
+// 4. Numeric separator for huge number
+console.log(2_123_456_000_000);
+
