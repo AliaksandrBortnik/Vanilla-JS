@@ -116,3 +116,28 @@ console.log(15n > 5); // true
 console.log(15n == 15); // true
 console.log(typeof 15n); // "bigint"
 console.log(10n / 3n); // 3, not like 3.33333333335
+
+// 6. Date (+ time)
+const now = new Date();
+console.log(now);
+
+console.log(new Date('12-05-2025'));
+console.log(new Date('Wed Jan 19 2022'));
+
+console.log(new Date(account1.movementsDates[0])); // New date based on serialized string
+console.log(new Date(2035, 13, 12, 1, 1,1, 1)); // JS auto-fixes dates
+console.log(new Date(0)); // 01-01-1970
+
+const date = new Date(2025, 0, 15);
+console.log(date.getFullYear());
+console.log(date.getMonth());
+console.log(date.getDate());
+console.log(date.getDay());
+console.log(date.getHours());
+console.log(date.toISOString()); // serialize
+
+date.setFullYear(2111);
+console.log(date);
+
+console.log(typeof now); // object
+console.log(Date.now());
