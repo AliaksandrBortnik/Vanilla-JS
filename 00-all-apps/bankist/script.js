@@ -77,14 +77,6 @@ let isSorted = false;
 const calcPrintBalance = function (account) {
   account.balance = account.movements.reduce((accum, mov) => accum += mov, 0);
   labelBalance.textContent = account.balance.toFixed(2) + '€';
-
-  const now = new Date();
-  const day = String(now.getDate()).padStart(2, '0');
-  const month = String(now.getMonth()).padStart(2, '0');
-  const year = now.getFullYear();
-  const hour = now.getHours();
-  const minute = now.getMinutes();
-  labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minute}`;
 }
 
 const createUsernames = function (accounts) {
@@ -96,20 +88,25 @@ const createUsernames = function (accounts) {
   });
 }
 
-const displayMovements = function (movements, sort = false) {
+const displayMovements = function (account, sort = false) {
   containerMovements.innerHTML = ''; // Clean up currently displayed items
 
-  const movs = sort ? movements.slice().sort((a, b) => a - b)
-    : movements;
+  const movs = sort ? account.movements.slice().sort((a, b) => a - b)
+    : account.movements;
 
   movs.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
-    // TODO: add date in template
+    const date = new Date(account.movementsDates[i]);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const displayDate = `${day}/${month}/${year}`;
+
     const rowTemplate = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-        <div class="movements__date">3 days ago</div>
+        <div class="movements__date">${displayDate}</div>
         <div class="movements__value">${mov.toFixed(2)}€</div>
       </div>
     `;
@@ -157,7 +154,7 @@ const displayGreeting = () => {
 };
 
 const updateUI = (account) => {
-  displayMovements(account.movements);
+  displayMovements(account);
   calcPrintBalance(account);
   calcDisplaySummary(account);
 }
@@ -173,6 +170,14 @@ const onLogin = (e) => {
   if (currentAccount) {
     displayGreeting();
     updateUI(currentAccount);
+
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const hour = String(now.getHours()).padStart(2, '0');
+    const minute = String(now.getMinutes()).padStart(2, '0');
+    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minute}`;
   }
 };
 
@@ -211,8 +216,13 @@ btnTransfer.addEventListener('click', (e) => {
     return;
   }
 
+
   currentAccount.movements.push(-amount);
   account.movements.push(amount);
+
+  const now = new Date().toISOString();
+  currentAccount.movementsDates.push(now);
+  account.movementsDates.push(now);
 
   updateUI(currentAccount);
   inputTransferTo.value = inputTransferAmount.value = '';
@@ -239,6 +249,7 @@ btnLoan.addEventListener('click', (e) => {
 
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     currentAccount.movements.push(amount);
+    currentAccount.movementsDates.push(new Date().toISOString());
     updateUI(currentAccount);
   }
 
@@ -247,10 +258,5 @@ btnLoan.addEventListener('click', (e) => {
 
 btnSort.addEventListener('click', (e) => {
   isSorted = !isSorted;
-  displayMovements(currentAccount.movements, isSorted);
+  displayMovements(currentAccount, isSorted);
 });
-
-// TODO: remove later on. FAKE sign-in
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = '1';
