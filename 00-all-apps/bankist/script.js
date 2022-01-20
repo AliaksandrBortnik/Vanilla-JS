@@ -74,9 +74,16 @@ const inputClosePin = document.querySelector('.form__input--pin');
 let currentAccount;
 let isSorted = false;
 
+const formatCurrency = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency
+  }).format(value);
+}
+
 const calcPrintBalance = function (account) {
   account.balance = account.movements.reduce((accum, mov) => accum += mov, 0);
-  labelBalance.textContent = account.balance.toFixed(2) + '€';
+  labelBalance.textContent = formatCurrency(account.balance, account.locale, 'EUR');
 }
 
 const createUsernames = function (accounts) {
@@ -88,12 +95,7 @@ const createUsernames = function (accounts) {
   });
 }
 
-const formatMovementDate = (date) => {
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  const fullDate = `${day}/${month}/${year}`;
-
+const formatMovementDate = (date, locale) => {
   const calcDaysBetween = (date1, date2) =>
     Math.trunc((Math.abs(date1 - date2)) / 1000 / 3600 / 24);
 
@@ -101,7 +103,7 @@ const formatMovementDate = (date) => {
   return daysPassed === 0 ? 'Today'
     : daysPassed === 1 ? 'Yesterday'
       : daysPassed <= 7 ? `${daysPassed} days ago`
-        : fullDate;
+        : new Intl.DateTimeFormat(locale).format(date);
 }
 
 const displayMovements = function (account, sort = false) {
@@ -112,12 +114,12 @@ const displayMovements = function (account, sort = false) {
 
   movs.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
-    const displayDate = formatMovementDate(new Date(account.movementsDates[i]));
+    const displayDate = formatMovementDate(new Date(account.movementsDates[i]), account.locale);
     const rowTemplate = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
         <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${mov.toFixed(2)}€</div>
+        <div class="movements__value">${formatCurrency(mov, account.locale, 'EUR')}</div>
       </div>
     `;
 
@@ -136,16 +138,19 @@ const calcDisplaySummary = function (account) {
     .filter(mov => mov > 0)
     .reduce((accum, mov) => accum + mov, 0);
 
-  labelSumIn.textContent = `${sumIn.toFixed(2)}€`;
+  labelSumIn.textContent = formatCurrency(sumIn, account.locale, 'EUR');
 
   const sumOut = account.movements
     .filter(mov => mov < 0)
     .reduce((accum, mov) => accum + mov, 0);
 
-  labelSumOut.textContent = `${sumOut.toFixed(2)}€`;
+  labelSumOut.textContent = formatCurrency(sumOut, account.locale, 'EUR');
 
   const sumInterest = sumIn > Math.abs(sumOut) ? sumIn - Math.abs(sumOut) : 0;
-  labelSumInterest.textContent = `${(sumInterest * account.interestRate / 100).toFixed(2)}€`;
+  labelSumInterest.textContent = formatCurrency(
+    sumInterest * account.interestRate / 100,
+    account.locale,
+    'EUR');
 };
 
 createUsernames(accounts);
@@ -181,13 +186,14 @@ const onLogin = (e) => {
     displayGreeting();
     updateUI(currentAccount);
 
-    const now = new Date();
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
-    const hour = String(now.getHours()).padStart(2, '0');
-    const minute = String(now.getMinutes()).padStart(2, '0');
-    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minute}`;
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: 'numeric',
+      minute: 'numeric'
+    };
+    labelDate.textContent = formatMovementDate(new Date(), currentAccount.locale, options);
   }
 };
 
