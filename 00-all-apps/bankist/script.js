@@ -73,11 +73,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 let currentAccount;
 let isSorted = false;
-
-let timer = new Date(0);
-timer.setSeconds(10);
-
-let intervalId;
+let timer;
 
 const formatCurrency = function (value, locale, currency) {
   return new Intl.NumberFormat(locale, {
@@ -173,6 +169,30 @@ const displayGreeting = () => {
   resetLogin();
 };
 
+const startTimer = () => {
+  if (timer) {
+    clearInterval(timer);
+  }
+
+  const tick = () => {
+    const minutes = String(Math.floor(time / 60)).padStart(2, 0);
+    const seconds = String(time % 60).padStart(2, 0);
+
+    labelTimer.textContent = `${minutes}:${seconds}`;
+
+    if (time === 0) {
+      onLogout();
+    }
+
+    time--;
+  }
+
+  let time = 300; // 5 minutes
+  tick();
+  // Start timer to make auto-logout
+  timer = setInterval(tick, 1000);
+};
+
 const updateUI = (account) => {
   displayMovements(account);
   calcPrintBalance(account);
@@ -181,8 +201,9 @@ const updateUI = (account) => {
 
 // EVENT HANDLERS
 const onLogout = () => {
+  labelWelcome.textContent = 'Log in to get started';
   containerApp.style.opacity = 0;
-  clearInterval(intervalId);
+  clearInterval(timer);
 }
 
 const onLogin = (e) => {
@@ -194,6 +215,7 @@ const onLogin = (e) => {
 
   if (currentAccount) {
     displayGreeting();
+    startTimer();
     updateUI(currentAccount);
 
     const options = {
@@ -204,23 +226,6 @@ const onLogin = (e) => {
       minute: 'numeric'
     };
     labelDate.textContent = formatMovementDate(new Date(), currentAccount.locale, options);
-
-    // Start timer to make auto-logout
-    intervalId = setInterval(() => {
-      if (+timer === 0) {
-        onLogout();
-        return;
-      }
-
-      const formatted = new Intl.DateTimeFormat(
-        currentAccount.locale,
-        { minute: '2-digit', second: '2-digit'}
-      ).format(timer);
-
-      labelTimer.textContent = formatted;
-      timer.setSeconds(timer.getSeconds() - 1);
-    }, 1000);
-
   }
 };
 
@@ -259,7 +264,6 @@ btnTransfer.addEventListener('click', (e) => {
     return;
   }
 
-
   currentAccount.movements.push(-amount);
   account.movements.push(amount);
 
@@ -269,6 +273,8 @@ btnTransfer.addEventListener('click', (e) => {
 
   updateUI(currentAccount);
   inputTransferTo.value = inputTransferAmount.value = '';
+
+  startTimer();
 });
 
 btnClose.addEventListener('click', (e) => {
@@ -283,6 +289,8 @@ btnClose.addEventListener('click', (e) => {
     labelWelcome.textContent = 'Log in to get started';
     containerApp.style.opacity = 0;
     inputCloseUsername.value = inputClosePin.value = '';
+
+    startTimer();
   }
 });
 
@@ -294,6 +302,8 @@ btnLoan.addEventListener('click', (e) => {
     currentAccount.movements.push(amount);
     currentAccount.movementsDates.push(new Date().toISOString());
     updateUI(currentAccount);
+
+    startTimer();
   }
 
   inputLoanAmount.value = '';
