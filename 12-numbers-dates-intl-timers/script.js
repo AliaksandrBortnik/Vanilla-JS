@@ -182,3 +182,19 @@ const currencyOptions = {
 };
 
 console.log(new Intl.NumberFormat(navigator.language, currencyOptions).format(100.55))
+
+// 8. Timers: setTimeout / setInterval
+const taskParams = ['Print', 'High']
+
+const timeoutId = setTimeout((taskName, priority) => {
+  console.warn(`Received [${taskName}] with priority=${priority} in 3 seconds`);
+}, 3000, ...taskParams);
+
+
+const [taskName, priority] = taskParams;
+
+if (taskName === 'Print') {
+  clearTimeout(timeoutId);
+}
+
+// Same stuff for setInterval / clearInterval
