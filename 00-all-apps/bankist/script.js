@@ -74,6 +74,11 @@ const inputClosePin = document.querySelector('.form__input--pin');
 let currentAccount;
 let isSorted = false;
 
+let timer = new Date(0);
+timer.setSeconds(10);
+
+let intervalId;
+
 const formatCurrency = function (value, locale, currency) {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -175,6 +180,11 @@ const updateUI = (account) => {
 }
 
 // EVENT HANDLERS
+const onLogout = () => {
+  containerApp.style.opacity = 0;
+  clearInterval(intervalId);
+}
+
 const onLogin = (e) => {
   e.preventDefault(); // Stop submitting the form with a page reload
   const login = inputLoginUsername.value;
@@ -194,6 +204,23 @@ const onLogin = (e) => {
       minute: 'numeric'
     };
     labelDate.textContent = formatMovementDate(new Date(), currentAccount.locale, options);
+
+    // Start timer to make auto-logout
+    intervalId = setInterval(() => {
+      if (+timer === 0) {
+        onLogout();
+        return;
+      }
+
+      const formatted = new Intl.DateTimeFormat(
+        currentAccount.locale,
+        { minute: '2-digit', second: '2-digit'}
+      ).format(timer);
+
+      labelTimer.textContent = formatted;
+      timer.setSeconds(timer.getSeconds() - 1);
+    }, 1000);
+
   }
 };
 
