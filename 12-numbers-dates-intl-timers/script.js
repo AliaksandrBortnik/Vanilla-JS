@@ -149,3 +149,36 @@ const calcDaysBetween = (date1, date2) =>
   Math.trunc((Math.abs(date1 - date2)) / 1000 / 3600 / 24);
 
 console.warn('Days between: ' + calcDaysBetween(new Date(2022,1, 4), new Date(2022, 1, 25)));
+
+// 7. Intl (i18n, l10n)
+const localizedDateNow = new Date();
+const options = {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: 'numeric',
+  minute: 'numeric',
+  weekday: 'long'
+};
+const locale = navigator.language;
+console.log(new Intl.DateTimeFormat(locale, options).format(localizedDateNow));
+
+const numOptions = {
+  style: 'unit',
+  unit: 'mile-per-hour' // celsius
+}
+
+const num = 4888999.12;
+console.log(new Intl.NumberFormat(locale).format(num));
+
+console.log('Browser: ' + new Intl.NumberFormat(navigator.language, numOptions).format(num));
+console.log('Germany: ' + new Intl.NumberFormat('de-DE', numOptions).format(num));
+console.log('US: ' + new Intl.NumberFormat('en-US', numOptions).format(num));
+console.log('UK: ' + new Intl.NumberFormat('en-GB', numOptions).format(num));
+
+const currencyOptions = {
+  style: 'currency',
+  currency: 'EUR'
+};
+
+console.log(new Intl.NumberFormat(navigator.language, currencyOptions).format(100.55))
