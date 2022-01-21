@@ -26,3 +26,28 @@ document.querySelector('.btn--close-cookie')
   .addEventListener('click', (e) => {
     message.remove();
   });
+
+// 4. Styles
+message.style.width = '120%';
+message.style.backgroundColor = '#36383a';
+
+console.log(message.style.height); // only works for inline-style
+console.log(getComputedStyle(message).color);
+message.style.height = Number.parseFloat(getComputedStyle(message).height) + 30 + 'px';
+
+// set custom properties
+document.documentElement.style.setProperty('--color-primary', 'orange');
+
+// 5. Attributes
+const logo = document.querySelector('.nav__logo');
+console.log(logo.src); // only works for standard attr
+console.log(logo.getAttribute('anyAttrName')); // works for custom attr as well
+
+// 6. Data attributes
+console.log(logo.dataset.author); // get custom data-author attribute
+
+// 7. Classes
+// logo.classList.add('')
+// logo.classList.remove('')
+// logo.classList.toggle('')
+// logo.classList.contains('')
