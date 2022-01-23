@@ -51,6 +51,14 @@ class Human {
     return new Date().getFullYear() - this.birthYear;
   }
 
+  static calcAvgSalary() {
+    return 10000;
+  }
+
+  static get baseSalary() {
+    return 5000;
+  }
+
   // Getter / Setter
   get name() {
     return this._firstName;
@@ -71,6 +79,8 @@ const bobAge = bob.calcAge();
 bob.name = 'Wake';
 console.log(bob.name);
 // bob.name = 'A'; // throws error
+console.log(`Salary received through static method: ${Human.calcAvgSalary()}`);
+console.log(`Salary received through static getter: ${Human.baseSalary}`);
 
 const account = {
   owner: 'josh',
@@ -82,6 +92,11 @@ const account = {
 
 console.log(account.latestMovement);
 console.log(account);
+
+// Old way to add a static method to a constructor-function
+Person.hey = function() {
+  return 'Hey there';
+}
 
 // Coding Challenge #1
 /*
