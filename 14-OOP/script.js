@@ -98,6 +98,17 @@ Person.hey = function() {
   return 'Hey there';
 }
 
+// Object.create
+const EngineProto = {
+  handle() {
+    return 'processed...';
+  }
+};
+
+const engine = Object.create(EngineProto, { name: { value: 'JS'} });
+console.log('Object.create() in action', engine);
+console.log(engine.__proto__ === EngineProto); // true
+
 // Coding Challenge #1
 /*
 1. Use a constructor function to implement a Car. A car has a make and a speed property.
@@ -128,3 +139,43 @@ bmw.accelerate();
 
 const merc = new Car('Mercedes', 95);
 merc.brake();
+
+// Coding Challenge #2
+/*
+1. Re-create challenge 1, but this time using an ES6 class;
+2. Add a getter called 'speedUS' which returns the current speed in mi/h (divide by 1.6);
+3. Add a setter called 'speedUS' which sets the current speed in mi/h (but converts it to km/h before storing the value, by multiplying the input by 1.6);
+4. Create a new car and experiment with the accelerate and brake methods, and with the getter and setter.
+DATA CAR 1: 'Ford' going at 120 km/h
+*/
+class Machine {
+  get speedUS() {
+    return this.speed / 1.6;
+  }
+
+  set speedUS(speed) {
+    this.speed = speed * 1.6;
+  }
+
+  constructor(make, speed) {
+    this.make = make;
+    this.speed = speed;
+  }
+
+  accelerate() {
+    this.speed += 10;
+    console.log(`Speed is increasing: ${this.speed}`);
+  }
+
+  brake() {
+    this.speed -= 5;
+    console.log(`Speed is slowing: ${this.speed}`);
+  }
+}
+
+const ford = new Machine('Ford', 120);
+console.log('Speed (mi/h) of ford', ford.speedUS);
+ford.speedUS = 100;
+console.log('Speed (km/h) of ford', ford.speed);
+ford.accelerate();
+console.log('Speed (km/h) of ford', ford.speed);
