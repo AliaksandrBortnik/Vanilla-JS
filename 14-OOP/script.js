@@ -40,6 +40,48 @@ console.log(['a', 'b'].__proto__ === Array.prototype); // true
 // 5 -> Number(5)
 console.log(Number(5).__proto__ === Number.prototype); // true
 
+// 3. Class (ES6). They always are executed in strict mode
+class Human {
+  constructor(firstName, birthYear) {
+    this._firstName = firstName;
+    this.birthYear = birthYear;
+  }
+
+  calcAge() {
+    return new Date().getFullYear() - this.birthYear;
+  }
+
+  // Getter / Setter
+  get name() {
+    return this._firstName;
+  }
+
+  // Adding additional validation logic or whatever
+  set name(value) {
+    if (value.length > 2) {
+      this._firstName = value;
+    } else {
+      throw new Error('Invalid name length.');
+    }
+  }
+}
+
+const bob = new Human('Bob', 1982);
+const bobAge = bob.calcAge();
+bob.name = 'Wake';
+console.log(bob.name);
+// bob.name = 'A'; // throws error
+
+const account = {
+  owner: 'josh',
+  movements: [100, 50, 300, 700],
+  get latestMovement() {
+    return this.movements.at(-1);
+  }
+};
+
+console.log(account.latestMovement);
+console.log(account);
 
 // Coding Challenge #1
 /*
