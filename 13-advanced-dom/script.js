@@ -1,7 +1,7 @@
 'use strict';
 
 ///////////////////////////////////////
-// Modal window
+// 1. Modal window
 
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
@@ -29,3 +29,28 @@ document.addEventListener('keydown', function (e) {
     closeModal();
   }
 });
+
+
+// 2. Add smooth scrolling when click on "Learn more"
+const btnScroll = document.querySelector('.btn--scroll-to');
+const scn1 = document.querySelector('#section--1');
+
+btnScroll.addEventListener('click', (e) => {
+  // Old way
+  // const coords = scn1.getBoundingClientRect();
+  // console.log('Current scroll X, Y', window.pageXOffset, window.pageYOffset);
+  // console.log('Viewport height, width', document.documentElement.clientHeight, document.documentElement.clientWidth);
+  //
+  // window.scrollTo({
+  //   left: coords.left + window.pageXOffset,
+  //   top: coords.top + window.pageYOffset,
+  //   behavior: 'smooth'
+  // });
+
+  // Newer way
+  scn1.scrollIntoView({ behavior: "smooth"})
+});
+
+
+
+
