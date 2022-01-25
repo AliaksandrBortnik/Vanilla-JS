@@ -51,3 +51,15 @@ console.log(logo.dataset.author); // get custom data-author attribute
 // logo.classList.remove('')
 // logo.classList.toggle('')
 // logo.classList.contains('')
+
+// 8. Events
+const h1 = document.querySelector('h1');
+const handleHeaderMouseEnter = (e) => console.log(e);
+
+// Common approach to attach handler. Any number of handlers can be attached
+h1.addEventListener('mouseenter', handleHeaderMouseEnter);
+// Then it is possible to clean up and deattach
+h1.removeEventListener('mouseenter', handleHeaderMouseEnter);
+
+// Old way. Only one handler
+h1.onmouseenter = (e) => console.log(e);
