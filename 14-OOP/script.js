@@ -255,3 +255,40 @@ console.log(tesla)
 tesla.accelerate();
 tesla.chargeBattery(100);
 tesla.brake();
+
+
+// Coding Challenge #4
+
+// 1. Re-create challenge #3, but this time using ES6 classes: create an 'EVCl' child class of the 'CarCl' class
+// 2. Make the 'charge' property private;
+// 3. Implement the ability to chain the 'accelerate' and 'chargeBattery' methods of this class,
+// and also update the 'brake' method in the 'CarCl' class.
+class CarCl {
+  constructor(make, speed) {
+    this.make = make;
+    this.speed = speed;
+  }
+}
+
+class EVCl extends CarCl {
+  #charge; // private field
+
+  constructor(make, speed, charge) {
+    super(make, speed);
+    this.#charge = charge;
+  }
+
+  // this method will attach to the prototype of EVCl's function construction
+  chargeBattery(chargeTo) {
+    this.#charge = chargeTo;
+  }
+
+  accelerate() {
+    this.speed += 20;
+    this.#charge -= 0.01;
+    console.log(`${this.make} going at ${this.speed} km/h, with a charge of ${this.#charge * 100}%`);
+  }
+}
+
+//   DATA CAR 1: 'Rivian' going at 120 km/h, with a charge of 23%
+const rivian = new EVCl('Rivian', 120, 0.23);
