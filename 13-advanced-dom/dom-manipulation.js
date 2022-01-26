@@ -63,3 +63,31 @@ h1.removeEventListener('mouseenter', handleHeaderMouseEnter);
 
 // Old way. Only one handler
 h1.onmouseenter = (e) => console.log(e);
+
+// 9. Add event listeners
+const navLinks = document.querySelector('.nav__links');
+navLinks.addEventListener('click', (e) => {
+  // Stop bubbling (or capturing if the handler is attached to the first phase)
+  // e.stopPropagation();
+  console.log(e);
+  // e.target - actual target element where event fires
+  // e.currentTarget - element which currently handles the event according to event phases
+}); // By default, adding to bubbling phase, however we can pass third param = true to attach on capturing phase (top to down)
+
+// 10. DOM traversing
+
+// Downwards
+const h1 = document.querySelector('h1');
+console.log(h1.querySelectorAll('.highlight'));
+console.log(h1.childNodes); // NodeList
+console.log(h1.children); // HtmlCollection
+console.log(h1.firstElementChild);
+console.log(h1.lastElementChild);
+
+// Upwards
+console.log(h1.parentElement); // h1.parentNode
+const header = h1.closest('.header');
+
+// Siblings
+console.log(h1.nextElementSibling);
+console.log(h1.previousElementSibling);
