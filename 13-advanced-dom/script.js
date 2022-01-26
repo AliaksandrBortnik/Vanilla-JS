@@ -64,3 +64,25 @@ nav.addEventListener('click', (e) => {
       .scrollIntoView({ behavior: 'smooth' });
   }
 });
+
+// 4. Tabs
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+tabsContainer.addEventListener('click', (e) => {
+  const clicked = e.target.closest('.btn');
+  if (!clicked) return;
+
+  const tabNumber = clicked.dataset.tab;
+  // Deactivate all tabs
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+
+  // Make active the clicked one
+  const tabToActivate = [...tabs].find(tab => tab.dataset.tab === tabNumber);
+  tabToActivate.classList.add('operations__tab--active');
+  // Show content of selected tab
+  const tabContentToShow = [...tabsContent].find(c => c.classList.contains(`operations__content--${tabNumber}`));
+  tabContentToShow.classList.add('operations__content--active');
+});
