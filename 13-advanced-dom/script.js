@@ -51,6 +51,16 @@ btnScroll.addEventListener('click', (e) => {
   scn1.scrollIntoView({ behavior: "smooth"})
 });
 
+// 3. Implement smooth scrolling for nav links using the event delegation
+const nav = document.querySelector('.nav');
+nav.addEventListener('click', (e) => {
+  if (e.target.classList.contains('nav__link')) { // check if delegating clicks on links only
+    console.log(`Clicked on: ${e.target.textContent}`);
+    e.preventDefault(); // stop using href and anchor of <a>
 
-
-
+    const anchorSelector = e.target.getAttribute('href');
+    document
+      .querySelector(anchorSelector)
+      .scrollIntoView({ behavior: 'smooth' });
+  }
+});
