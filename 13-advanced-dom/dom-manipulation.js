@@ -77,7 +77,6 @@ navLinks.addEventListener('click', (e) => {
 // 10. DOM traversing
 
 // Downwards
-const h1 = document.querySelector('h1');
 console.log(h1.querySelectorAll('.highlight'));
 console.log(h1.childNodes); // NodeList
 console.log(h1.children); // HtmlCollection
@@ -86,8 +85,24 @@ console.log(h1.lastElementChild);
 
 // Upwards
 console.log(h1.parentElement); // h1.parentNode
-const header = h1.closest('.header');
+h1.closest('.header');
 
 // Siblings
 console.log(h1.nextElementSibling);
 console.log(h1.previousElementSibling);
+
+// 11. Lifecycle DOM events
+document.addEventListener('DOMContentLoaded', (e) => {
+  console.log('HMTL parsed and DOM tree is built', e);
+});
+
+window.addEventListener('load', (e) => {
+  console.log('Page completely loaded', e);
+});
+
+window.addEventListener('beforeunload', (e) => {
+  e.preventDefault(); // for some browsers
+  // TODO: ask if the user wants to leave the page
+  // ... any stuff here
+  e.returnValue = ''; // this is required due to historical reason
+});
