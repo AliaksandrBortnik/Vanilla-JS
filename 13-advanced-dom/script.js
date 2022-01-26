@@ -86,3 +86,25 @@ tabsContainer.addEventListener('click', (e) => {
   const tabContentToShow = [...tabsContent].find(c => c.classList.contains(`operations__content--${tabNumber}`));
   tabContentToShow.classList.add('operations__content--active');
 });
+
+// 5. Navbar fade animation
+const headerNavLinks = nav.querySelectorAll('.nav__links');
+const navLogo = nav.querySelector('img');
+
+const handleHover = (e, opacity) => {
+  if (e.target.classList.contains('nav__link')) {
+    const linkOver = e.target;
+    navLogo.style.opacity = opacity;
+
+    headerNavLinks.forEach(link => {
+      if (link !== linkOver) {
+        link.style.opacity = opacity;
+      }
+    });
+  }
+};
+
+nav.addEventListener('mouseover', (e) => handleHover(e, 0.5));
+nav.addEventListener('mouseout', (e) => handleHover(e, 1));
+
+
