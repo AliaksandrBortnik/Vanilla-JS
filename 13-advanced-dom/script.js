@@ -91,7 +91,9 @@ tabsContainer.addEventListener('click', (e) => {
 const headerNavLinks = nav.querySelectorAll('.nav__links');
 const navLogo = nav.querySelector('img');
 
-const handleHover = (e, opacity) => {
+const handleHover = function(e) {
+  const opacity = this; // passed through the bind
+
   if (e.target.classList.contains('nav__link')) {
     const linkOver = e.target;
     navLogo.style.opacity = opacity;
@@ -104,7 +106,7 @@ const handleHover = (e, opacity) => {
   }
 };
 
-nav.addEventListener('mouseover', (e) => handleHover(e, 0.5));
-nav.addEventListener('mouseout', (e) => handleHover(e, 1));
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
 
 
