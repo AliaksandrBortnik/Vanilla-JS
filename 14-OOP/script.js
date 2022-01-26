@@ -98,7 +98,7 @@ Person.hey = function() {
   return 'Hey there';
 }
 
-// Object.create
+// 4. Object.create
 const EngineProto = {
   handle() {
     return 'processed...';
@@ -108,6 +108,48 @@ const EngineProto = {
 const engine = Object.create(EngineProto, { name: { value: 'JS'} });
 console.log('Object.create() in action', engine);
 console.log(engine.__proto__ === EngineProto); // true
+
+// 5. Inheritance between classes
+function PersonInh(firstName, lastName) {
+  this.firstName = firstName;
+  this.lastName = lastName;
+}
+
+PersonInh.prototype.getFullName = function() {
+  return `${this.firstName} ${this.lastName}`;
+};
+
+function Student(firstName, lastName, course) {
+  PersonInh.call(this, firstName, lastName);
+  this.course = course;
+}
+
+Student.prototype = Object.create(PersonInh.prototype); // new PersonInh()
+Student.prototype.constructor = Student;
+Student.prototype.showCourse = function() {
+  console.log(`Current course is ${this.course}`);
+};
+
+const josh = new Student('Josh', 'Rally', 'JS advanced');
+josh.showCourse();
+josh.getFullName();
+console.log('Josh protos', josh.__proto__, josh.__proto__.__proto__);
+
+// The same stuff using ES6 class
+class PersonCl {
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
+    this.birthYear = birthYear;
+  }
+}
+
+class StudentCl extends PersonCl {
+  constructor(fullName, birthYear, course) {
+    super(fullName, birthYear);
+    this.course = course;
+  }
+}
+
 
 // Coding Challenge #1
 /*
