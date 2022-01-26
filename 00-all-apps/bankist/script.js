@@ -313,3 +313,47 @@ btnSort.addEventListener('click', (e) => {
   isSorted = !isSorted;
   displayMovements(currentAccount, isSorted);
 });
+
+class Account {
+  // public fields
+  locale = navigator.language;
+
+  // private fields
+  #pin;
+  #movements = []; // # is a new feature.
+  //  _movements = []; // Earlier _ is a convention for private fields until real private modificator is accepted in ES (2022?)
+
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+    this.#pin = pin;
+  }
+
+  // public interface
+  requestLoan(value) {
+    if (this.#approveLoan(value)) {
+      this.#deposit((value));
+      console.log('Loan approved');
+    }
+  }
+
+  getMovements() {
+    return this.#movements;
+  }
+
+  // private interface
+
+  #deposit(amount) {
+    this.#movements.push(amount);
+  }
+
+  #withdraw(amount) {
+    this.#movements.push(-amount);
+  }
+
+
+  //_approveLoan(value) { // private by developer convention, not a feature of ES at all
+  #approveLoan(value) { // private method using a new syntax
+    return true;
+  }
+}
