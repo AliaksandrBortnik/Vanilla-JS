@@ -137,69 +137,150 @@ nav.addEventListener('mouseout', handleHover.bind(1));
 // observer.observe(scn1); // section1 is a target element to observe
 
 // 6.1.2 Implemented: Show sticky header when viewport doesn't include header element at all
-const appHeader = document.querySelector('.header');
-const headerHeight = nav.getBoundingClientRect().height;
-
-const stickyNav = ([entry]) => {
-  console.log('intersect', entry)
-  if (!entry.isIntersecting) {
-    nav.classList.add('sticky');
-  } else {
-    nav.classList.remove('sticky');
-  }
-};
-
-const headerObserver = new IntersectionObserver(stickyNav, {
-  root: null, // viewport
-  threshold: 0,
-  rootMargin: `-${headerHeight}px` // space for header itself
-});
-headerObserver.observe(appHeader);
-
-// 7. Revealing elements on scroll (elements appear while scrolling)
-const allSections = document.querySelectorAll('.section');
-
-const revealSectionFn = (entries, observer) => {
-  const [entry] = entries;
-
-  if (entry.isIntersecting) {
-    entry.target.classList.remove('section--hidden');
-  }
-
-  observer.unobserve(entry.target);
-};
-
-const sectionObserver = new IntersectionObserver(revealSectionFn, {
-  root: null,
-  threshold: 0.1
-});
-
-allSections.forEach(section => {
-  sectionObserver.observe(section);
-  section.classList.add('section--hidden');
-});
+// const appHeader = document.querySelector('.header');
+// const headerHeight = nav.getBoundingClientRect().height;
+//
+// const stickyNav = ([entry]) => {
+//   console.log('intersect', entry)
+//   if (!entry.isIntersecting) {
+//     nav.classList.add('sticky');
+//   } else {
+//     nav.classList.remove('sticky');
+//   }
+// };
+//
+// const headerObserver = new IntersectionObserver(stickyNav, {
+//   root: null, // viewport
+//   threshold: 0,
+//   rootMargin: `-${headerHeight}px` // space for header itself
+// });
+// headerObserver.observe(appHeader);
+//
+// // 7. Revealing elements on scroll (elements appear while scrolling)
+// const allSections = document.querySelectorAll('.section');
+//
+// const revealSectionFn = (entries, observer) => {
+//   const [entry] = entries;
+//
+//   if (entry.isIntersecting) {
+//     entry.target.classList.remove('section--hidden');
+//   }
+//
+//   observer.unobserve(entry.target);
+// };
+//
+// const sectionObserver = new IntersectionObserver(revealSectionFn, {
+//   root: null,
+//   threshold: 0.1
+// });
+//
+// allSections.forEach(section => {
+//   sectionObserver.observe(section);
+//   section.classList.add('section--hidden');
+// });
 
 // 8. Lazy loading images for performance optimization
 // Initially we load very small size (like blurred) img to speed up app start-up, then load the full resolution
-const lazyImages = document.querySelectorAll('img[data-src]');
+// const lazyImages = document.querySelectorAll('img[data-src]');
+//
+// const loadImg = (entries, observer) => {
+//   const [entry] = entries;
+//   const imgElem = entry.target;
+//   imgElem.setAttribute('src', imgElem.dataset.src);
+//
+//   // Remove the blur class when a full-resolution img is loaded
+//   imgElem.addEventListener('load', (e) => {
+//     imgElem.classList.remove('lazy-img');
+//   });
+//
+//   observer.unobserve(entry);
+// }
+//
+// const imageObserver = new IntersectionObserver(loadImg, {
+//   root: null,
+//   threshold: 0,
+//   rootMargin: '200px' // start loading images a little bit beforehand
+// });
+//
+// lazyImages.forEach(img => imageObserver.observe(img));
 
-const loadImg = (entries, observer) => {
-  const [entry] = entries;
-  const imgElem = entry.target;
-  imgElem.setAttribute('src', imgElem.dataset.src);
+// 9. Slider component
+const carousel = () => {
+  const slides = document.querySelectorAll('.slide');
+  const btnLeft = document.querySelector('.slider__btn--left');
+  const btnRight = document.querySelector('.slider__btn--right');
+  const dotContainer = document.querySelector('.dots');
 
-  // Remove the blur class when a full-resolution img is loaded
-  imgElem.addEventListener('load', (e) => {
-    imgElem.classList.remove('lazy-img');
+  let currentSlide = 0;
+  const maxSlide = slides.length;
+
+  const init = () => {
+    createDots();
+    goToSlide(0);
+  };
+
+  init();
+
+  function createDots() {
+    for (let i = 0; i < maxSlide; i++) {
+      dotContainer.insertAdjacentHTML('beforeend', `<button class="dots__dot" data-slide="${i}"></button>`);
+    }
+  }
+
+  function makeDotActive(slide) {
+    const dots = dotContainer.querySelectorAll('.dots__dot');
+    dots.forEach(dot => dot.classList.remove('dots__dot--active'));
+
+    dotContainer.querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add('dots__dot--active');
+  }
+
+  function goToSlide(slide) {
+    slides.forEach((s, i) =>
+      s.style.transform = `translateX(${100 * (i - slide)}%)`);
+    makeDotActive(slide);
+  }
+
+  function nextSlide() {
+    if (currentSlide === maxSlide - 1) {
+      currentSlide = 0;
+    } else {
+      currentSlide++;
+    }
+
+    goToSlide(currentSlide);
+  }
+
+  function prevSlide() {
+    if (currentSlide === 0) {
+      currentSlide = maxSlide - 1;
+    } else {
+      currentSlide--;
+    }
+
+    goToSlide(currentSlide);
+  }
+
+  btnLeft.addEventListener('click', prevSlide);
+  btnRight.addEventListener('click', nextSlide);
+
+  document.addEventListener('keydown', (e) => {
+    switch (e.key) {
+      case 'ArrowLeft':
+        prevSlide();
+        break;
+      case 'ArrowRight':
+        nextSlide();
+        break;
+    }
   });
 
-  observer.unobserve(entry);
-}
+  dotContainer.addEventListener('click', (e) => {
+    if (e.target.classList.contains('dots__dot')) {
+      const { slide } = e.target.dataset;
+      goToSlide(slide);
+    }
+  });
+};
 
-const imageObserver = new IntersectionObserver(loadImg, {
-  root: null,
-  threshold: 0,
-  rootMargin: '200px' // start loading images a little bit beforehand
-});
-
-lazyImages.forEach(img => imageObserver.observe(img));
+carousel();
