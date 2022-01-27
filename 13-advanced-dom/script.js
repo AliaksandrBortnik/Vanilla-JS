@@ -109,4 +109,49 @@ const handleHover = function(e) {
 nav.addEventListener('mouseover', handleHover.bind(0.5));
 nav.addEventListener('mouseout', handleHover.bind(1));
 
+// 6. Sticky navigation (scroll event)
+// const initialCoords = scn1.getBoundingClientRect();
+// console.log(initialCoords)
+//
+// window.addEventListener('scroll', () => {
+//   if (window.scrollY > initialCoords.top) {
+//     nav.classList.add('sticky');
+//   } else {
+//     nav.classList.remove('sticky');
+//   }
+// });
 
+// 6.1. Sticky navigation, more efficient way (intersection observer API)
+// 6.1.1. Basic test example
+// const observerFn = (entries, observer) => {
+//   entries.forEach(entry => console.log(entry));
+// };
+//
+// const observerOptions = {
+//   root: null, // intersect with an entire viewport
+//   //threshold: 0.1 // 10% intersection
+//   threshold: [0, 0.2]
+// };
+//
+// const observer = new IntersectionObserver(observerFn, observerOptions);
+// observer.observe(scn1); // section1 is a target element to observe
+
+// 6.1.2 Implemented: Show sticky header when viewport doesn't include header element at all
+const appHeader = document.querySelector('.header');
+const headerHeight = nav.getBoundingClientRect().height;
+
+const stickyNav = ([entry]) => {
+  console.log('intersect', entry)
+  if (!entry.isIntersecting) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null, // viewport
+  threshold: 0,
+  rootMargin: `-${headerHeight}px` // space for header itself
+});
+headerObserver.observe(appHeader);
