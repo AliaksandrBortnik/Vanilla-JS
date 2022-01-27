@@ -178,3 +178,28 @@ allSections.forEach(section => {
   sectionObserver.observe(section);
   section.classList.add('section--hidden');
 });
+
+// 8. Lazy loading images for performance optimization
+// Initially we load very small size (like blurred) img to speed up app start-up, then load the full resolution
+const lazyImages = document.querySelectorAll('img[data-src]');
+
+const loadImg = (entries, observer) => {
+  const [entry] = entries;
+  const imgElem = entry.target;
+  imgElem.setAttribute('src', imgElem.dataset.src);
+
+  // Remove the blur class when a full-resolution img is loaded
+  imgElem.addEventListener('load', (e) => {
+    imgElem.classList.remove('lazy-img');
+  });
+
+  observer.unobserve(entry);
+}
+
+const imageObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px' // start loading images a little bit beforehand
+});
+
+lazyImages.forEach(img => imageObserver.observe(img));
