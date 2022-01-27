@@ -155,3 +155,26 @@ const headerObserver = new IntersectionObserver(stickyNav, {
   rootMargin: `-${headerHeight}px` // space for header itself
 });
 headerObserver.observe(appHeader);
+
+// 7. Revealing elements on scroll (elements appear while scrolling)
+const allSections = document.querySelectorAll('.section');
+
+const revealSectionFn = (entries, observer) => {
+  const [entry] = entries;
+
+  if (entry.isIntersecting) {
+    entry.target.classList.remove('section--hidden');
+  }
+
+  observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver(revealSectionFn, {
+  root: null,
+  threshold: 0.1
+});
+
+allSections.forEach(section => {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+});
