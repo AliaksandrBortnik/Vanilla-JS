@@ -8,13 +8,17 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+const MAP_ZOOM_LEVEL = 13;
+
 class App {
   workouts = [];
   #map;
+  #mapZoomLevel = 13;
   #lastMapEvent;
 
   constructor() {
     this._getPosition();
+    containerWorkouts.addEventListener('click', this._centerActivityOnMap.bind(this));
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleActivityField);
   }
@@ -36,9 +40,7 @@ class App {
 
   _loadMap({latitude, longitude}) {
     const coords = [latitude, longitude];
-    const zoomLevel = 13;
-
-    this.#map = L.map('map').setView(coords, zoomLevel);
+    this.#map = L.map('map').setView(coords, this.#mapZoomLevel);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -163,6 +165,21 @@ class App {
     inputDistance.value = '';
     inputDuration.value = '';
     inputCadence.value = '';
+  }
+
+  _centerActivityOnMap(e) {
+    const targetWorkout = e.target.closest('.workout');
+
+    if (!targetWorkout) return;
+
+    const id = targetWorkout.dataset.id;
+    const workout = this.workouts.find(w => w.id === id);
+    this.#map.setView(workout.coords, this.#mapZoomLevel, {
+      animate: true, // optional options
+      pan: {
+        duration: 1
+      }
+    });
   }
 }
 
