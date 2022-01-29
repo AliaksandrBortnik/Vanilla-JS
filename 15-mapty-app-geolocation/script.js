@@ -8,8 +8,6 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
-const MAP_ZOOM_LEVEL = 13;
-
 class App {
   workouts = [];
   #map;
@@ -17,6 +15,7 @@ class App {
   #lastMapEvent;
 
   constructor() {
+    this._restoreFromLocalStorage();
     this._getPosition();
     containerWorkouts.addEventListener('click', this._centerActivityOnMap.bind(this));
     form.addEventListener('submit', this._newWorkout.bind(this));
@@ -47,6 +46,7 @@ class App {
     }).addTo(this.#map);
 
     this.#map.on('click', this._showForm.bind(this));
+    this.workouts.forEach(work => this._renderWorkoutPin(work)); // Restore from LocalStorage
   }
 
   _showForm(e) {
@@ -108,8 +108,9 @@ class App {
     }
 
     this.workouts.push(workout);
+    this._saveInLocalStorage();
     this._renderWorkout(workout);
-    this._renderWorkoutPin(workout, activityType);
+    this._renderWorkoutPin(workout);
     this._clearForm();
   }
 
@@ -123,7 +124,7 @@ class App {
         closeOnClick: false,
         className: `${workout.type}-popup`
       }))
-      .setPopupContent('Activity') // TODO: fill content in pop-up
+      .setPopupContent(workout.description)
       .openPopup();
   }
 
@@ -181,6 +182,19 @@ class App {
       }
     });
   }
+
+  _saveInLocalStorage() {
+    localStorage.setItem('workouts', JSON.stringify(this.workouts));
+  }
+
+  _restoreFromLocalStorage() {
+    const workouts = JSON.parse(localStorage.getItem('workouts')) || [];
+
+    if (!workouts) return;
+
+    this.workouts = workouts;
+    this.workouts.forEach(work => this._renderWorkout(work));
+  }
 }
 
 class Workout {
@@ -204,11 +218,8 @@ class Running extends Workout {
     super(distance, duration, coords);
     this.type = 'running';
     this.cadence = cadence;
+    this.pace = duration / distance;
     this._setDescription();
-  }
-
-  get pace() {
-    return this.duration / this.distance;
   }
 }
 
@@ -217,11 +228,8 @@ class Cycling extends Workout {
     super(distance, duration, coords);
     this.type = 'cycling';
     this.elevationGain = elevationGain;
+    this.speed = this.distance / this.duration;
     this._setDescription();
-  }
-
-  get speed() {
-    return this.distance / this.duration;
   }
 }
 
