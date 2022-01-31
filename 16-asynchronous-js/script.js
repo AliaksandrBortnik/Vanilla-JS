@@ -71,10 +71,18 @@ const renderError = (message) => {
 //
 // getCountryAndNeighbour('united kingdom');
 
+const getJson = (url, message = 'Something went wrong') => {
+  return fetch(url).then(response => {
+    if (!response.ok) {
+      throw new Error(`${message}. Status is ${response.status}`);
+    }
+    return response.json();
+  });
+}
+
 // 2. Same as previous, but using a modern fetch API instead of old XMLHttpRequest
 const getCountryAndNeighbour = (name) => {
-  fetch(`https://restcountries.com/v2/name/${name}`)
-    .then(resp => resp.json())
+  getJson(`https://restcountries.com/v2/name/${name}`, 'Country data is not received')
     // It is possible to pass two callbacks: for resolved and rejected promises
     // .then(resp => resp.json(), err => alert(err))
     .then(resp => {
@@ -82,19 +90,19 @@ const getCountryAndNeighbour = (name) => {
       const [neighbour] = country.borders;
       renderCountry(country);
 
-      if (!neighbour) return; // Make sure there is a neighbour country
+      if (!neighbour) throw new Error('Neighbour of the country is not found');
 
-      return fetch(`https://restcountries.com/v2/alpha/${neighbour}`);
+      return getJson(`https://restcountries.com/v2/alpha/${neighbour}`, 'Country data is not received');
     })
-    .then(resp => resp.json())
     .then(neighborCountry => renderCountry(neighborCountry, 'neighbour'))
     .catch(err => renderError(err.message)) // more universal error handler
     .finally(_ => {
       countriesContainer.style.opacity = 1;
       // Usually for stopping spinner/loader
-      console.log('Finished execution');
     });
 };
+
+getCountryAndNeighbour('portugal');
 
 // 3. Promises (Pending -> Settled (Fulfilled / Rejected))
 
@@ -133,5 +141,5 @@ const whereAmI = function (lat, lng) {
 }
 
 // whereAmI(52.508, 13.381);
-whereAmI(19.037, 72.873);
+// whereAmI(19.037, 72.873);
 // whereAmI(-33.933, 18.474);
