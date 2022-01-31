@@ -97,3 +97,41 @@ const getCountryAndNeighbour = (name) => {
 };
 
 // 3. Promises (Pending -> Settled (Fulfilled / Rejected))
+
+///////////////////////////////////////
+// Coding Challenge #1
+
+// 1. Create a function 'whereAmI' which takes as inputs a latitude value (lat) and a longitude value (lng) (these are GPS coordinates).
+const whereAmI = function (lat, lng) {
+  // 2. Do 'reverse geocoding' of the provided coordinates. Reverse geocoding means to convert coordinates to a meaningful location, like a city and country name.
+  fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
+    .then(resp => {
+      if (!resp.ok) throw new Error('Geolocation service issue');
+      return resp.json();
+    })
+    .then(data => {
+      const {city, countryName} = data;
+      // 3. Once you have the data, take a look at it in the console to see all the attributes that you recieved about the provided location. Then, using this data, log a messsage like this to the console: 'You are in Berlin, Germany'
+      console.log(`You are in ${city}, ${countryName}`);
+      return countryName;
+    })
+    .then(countryName => {
+      // 6. Now it's time to use the received data to render a country. So take the relevant attribute from the geocoding API result, and plug it into the countries API that we have been using.
+      return fetch(`https://restcountries.com/v2/name/${countryName}`);
+    })
+    .then(resp => {
+      if (!resp.ok) throw new Error('Restcountries service issue');
+      return resp.json();
+    })
+    // 7. Render the country and catch any errors, just like we have done in the last lecture (you can even copy this code, no need to type the same code)
+    .then(([country]) => renderCountry(country))
+    // 4. Chain a .catch method to the end of the promise chain and log errors to the console
+    .catch(err => console.error('Something went wrong', err))
+    .finally(_ => {
+      // Hide loader or whatever
+    });
+}
+
+// whereAmI(52.508, 13.381);
+whereAmI(19.037, 72.873);
+// whereAmI(-33.933, 18.474);
