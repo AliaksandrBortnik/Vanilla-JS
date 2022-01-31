@@ -1,6 +1,6 @@
 'use strict';
 
-// Classic deeply nested asynchronous stuff. In other words, callback hell
+// 0. Classic deeply nested asynchronous stuff. In other words, callback hell
 setTimeout(() => {
   console.log('First timeout logic');
   setTimeout(() => {
@@ -37,28 +37,48 @@ const renderCountry = function (data, className = '') {
   countriesContainer.style.opacity = 1;
 }
 
-const getCountryAndNeighbour = function (name) {
-  const onLoad = function () {
-    const [payload] = JSON.parse(this.responseText);
-    const [neighbor] = payload.borders;
-    renderCountry(payload);
+// 1. Leverage REST Countries API and using old-school XMLHttpRequest
+// const getCountryAndNeighbour = function (name) {
+//   const onLoad = function () {
+//     const [payload] = JSON.parse(this.responseText);
+//     const [neighbor] = payload.borders;
+//     renderCountry(payload);
+//
+//     if (!neighbor) return; // Make sure there is a neighbour country
+//
+//     // Get neighbor data
+//     const request2 = new XMLHttpRequest();
+//     request2.open('GET', `https://restcountries.com/v2/alpha/${neighbor}`);
+//     request2.send();
+//     request2.addEventListener('load', function () {
+//       const neighborPayload = JSON.parse(this.responseText);
+//       renderCountry(neighborPayload, 'neighbour');
+//     });
+//   };
+//
+//   const request = new XMLHttpRequest();
+//   request.addEventListener('load', onLoad);
+//   request.open('GET', `https://restcountries.com/v2/name/${name}`);
+//   request.send();
+// };
+//
+// getCountryAndNeighbour('united kingdom');
 
-    if (!neighbor) return; // Make sure there is a neighbour country
+// 2. Same as previous, but using a modern fetch API instead of old XMLHttpRequest
+const getCountryAndNeighbour = (name) => {
+  fetch(`https://restcountries.com/v2/name/${name}`)
+    .then(resp => resp.json())
+    .then(resp => {
+      const [country] = resp;
+      const [neighbour] = country.borders;
+      renderCountry(country);
 
-    // Get neighbor data
-    const request2 = new XMLHttpRequest();
-    request2.open('GET', `https://restcountries.com/v2/alpha/${neighbor}`);
-    request2.send();
-    request2.addEventListener('load', function () {
-      const neighborPayload = JSON.parse(this.responseText);
-      renderCountry(neighborPayload, 'neighbour');
-    });
-  };
+      if (!neighbour) return; // Make sure there is a neighbour country
 
-  const request = new XMLHttpRequest();
-  request.addEventListener('load', onLoad);
-  request.open('GET', `https://restcountries.com/v2/name/${name}`);
-  request.send();
+      return fetch(`https://restcountries.com/v2/alpha/${neighbour}`);
+    })
+    .then(resp => resp.json())
+    .then(neighborCountry => renderCountry(neighborCountry, 'neighbour'));
 };
 
 getCountryAndNeighbour('united kingdom');
