@@ -19,6 +19,8 @@ setTimeout(() => {
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
+btn.addEventListener('click', () => getCountryAndNeighbour('united kingdom'));
+
 const renderCountry = function (data, className = '') {
   const template = `
     <article class="country ${className}">
@@ -34,6 +36,11 @@ const renderCountry = function (data, className = '') {
   `;
 
   countriesContainer.insertAdjacentHTML('beforeend', template);
+  countriesContainer.style.opacity = 1;
+}
+
+const renderError = (message) => {
+  countriesContainer.insertAdjacentText('beforeend', message);
   countriesContainer.style.opacity = 1;
 }
 
@@ -68,6 +75,8 @@ const renderCountry = function (data, className = '') {
 const getCountryAndNeighbour = (name) => {
   fetch(`https://restcountries.com/v2/name/${name}`)
     .then(resp => resp.json())
+    // It is possible to pass two callbacks: for resolved and rejected promises
+    // .then(resp => resp.json(), err => alert(err))
     .then(resp => {
       const [country] = resp;
       const [neighbour] = country.borders;
@@ -78,7 +87,13 @@ const getCountryAndNeighbour = (name) => {
       return fetch(`https://restcountries.com/v2/alpha/${neighbour}`);
     })
     .then(resp => resp.json())
-    .then(neighborCountry => renderCountry(neighborCountry, 'neighbour'));
+    .then(neighborCountry => renderCountry(neighborCountry, 'neighbour'))
+    .catch(err => renderError(err.message)) // more universal error handler
+    .finally(_ => {
+      countriesContainer.style.opacity = 1;
+      // Usually for stopping spinner/loader
+      console.log('Finished execution');
+    });
 };
 
-getCountryAndNeighbour('united kingdom');
+// 3. Promises (Pending -> Settled (Fulfilled / Rejected))
