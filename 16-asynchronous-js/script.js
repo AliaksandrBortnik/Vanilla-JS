@@ -105,6 +105,15 @@ const getCountryAndNeighbour = (name) => {
 getCountryAndNeighbour('portugal');
 
 // 3. Promises (Pending -> Settled (Fulfilled / Rejected))
+// Callstack, event loop, macrotask queue, microtask queue, web apis environment
+console.log('Starting');
+setTimeout(() => console.log('Timer'), 0); // task queue / macrotask queue / callback queue
+Promise.resolve('Resolved 1').then(res => console.log(res)); // microtask queue
+Promise.resolve('Resolved 2').then(res => {
+  for (let i = 0; i < 10000000000; i++) {} // simulate long running microtask to delay the callback of timer macrotask
+  console.log(res)
+}); // microtask queue
+console.log('End');
 
 ///////////////////////////////////////
 // Coding Challenge #1
