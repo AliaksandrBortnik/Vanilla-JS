@@ -19,7 +19,7 @@ setTimeout(() => {
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
-btn.addEventListener('click', () => getCountryAndNeighbour('united kingdom'));
+// btn.addEventListener('click', () => getCountryAndNeighbour('united kingdom'));
 
 const renderCountry = function (data, className = '') {
   const template = `
@@ -102,7 +102,7 @@ const getCountryAndNeighbour = (name) => {
     });
 };
 
-getCountryAndNeighbour('portugal');
+// getCountryAndNeighbour('portugal');
 
 // 3. Promises (Pending -> Settled (Fulfilled / Rejected))
 // Callstack, event loop, macrotask queue, microtask queue, web apis environment
@@ -169,13 +169,24 @@ waitAll();
 Promise.resolve('Resolved state').then(console.log);
 Promise.reject('Rejected state').catch(console.error);
 
+// 7. Promisifying geolocation API call
+const getPosition = () => {
+  return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+}
+
 ///////////////////////////////////////
 // Coding Challenge #1
 
 // 1. Create a function 'whereAmI' which takes as inputs a latitude value (lat) and a longitude value (lng) (these are GPS coordinates).
-const whereAmI = function (lat, lng) {
-  // 2. Do 'reverse geocoding' of the provided coordinates. Reverse geocoding means to convert coordinates to a meaningful location, like a city and country name.
-  fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
+// const whereAmI = function (lat, lng) {
+const whereAmI = function () { // Version 2. Using promisified GeoLocation call to get position
+  getPosition()
+    .then(({ latitude: lat, longitude: lng}) => {
+      // 2. Do 'reverse geocoding' of the provided coordinates. Reverse geocoding means to convert coordinates to a meaningful location, like a city and country name.
+      return fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
+    })
     .then(resp => {
       if (!resp.ok) throw new Error('Geolocation service issue');
       return resp.json();
@@ -202,6 +213,8 @@ const whereAmI = function (lat, lng) {
       // Hide loader or whatever
     });
 }
+
+btn.addEventListener('click', whereAmI);
 
 // whereAmI(52.508, 13.381);
 // whereAmI(19.037, 72.873);
