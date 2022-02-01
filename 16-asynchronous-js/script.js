@@ -110,10 +110,64 @@ console.log('Starting');
 setTimeout(() => console.log('Timer'), 0); // task queue / macrotask queue / callback queue
 Promise.resolve('Resolved 1').then(res => console.log(res)); // microtask queue
 Promise.resolve('Resolved 2').then(res => {
-  for (let i = 0; i < 10000000000; i++) {} // simulate long running microtask to delay the callback of timer macrotask
+  //for (let i = 0; i < 10000000000; i++) {} // simulate long running microtask to delay the callback of timer macrotask
   console.log(res)
 }); // microtask queue
 console.log('End');
+
+// 4. Building own promises from scratch
+const lottery = new Promise((resolve, reject) => {
+  if (Math.random() > 0.5) {
+    resolve('Victory');
+  } else {
+    reject('No luck');
+  }
+});
+
+lottery
+  .then(console.log)
+  .then(null, console.warn) // similar to catch. rarely used
+  .catch(console.error) // most common approach to handle rejected promise in a promise chain
+
+// 5. Promisifying (convert callback based async behavior to promise based)
+const wait = (seconds) => {
+  return new Promise(resolve => {
+    setTimeout(_ => resolve(`Waited ${seconds} seconds`), seconds * 1000);
+  });
+}
+
+// Leverage a promise chain approach instead of callback hell (see #0 at the beginning of the script)
+// Flat code structure is much better than deeply nested
+wait(1)
+  .then(res => {
+    console.log(res);
+    return wait(2);
+  })
+  .then(res => {
+    console.log(res);
+    return wait(3);
+  })
+  .then(res => {
+    console.log(res);
+    return wait(4);
+  })
+  .then(res => {
+    console.log(res);
+  });
+
+// There is even better approach using async/await feature to access siblings data and keep flattest structure possible
+const waitAll = async () => {
+  console.log(await wait(1));
+  console.log(await wait(2));
+  console.log(await wait(3));
+  console.log(await wait(4));
+};
+
+waitAll();
+
+// 6. Static methods
+Promise.resolve('Resolved state').then(console.log);
+Promise.reject('Rejected state').catch(console.error);
 
 ///////////////////////////////////////
 // Coding Challenge #1
