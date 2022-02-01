@@ -218,17 +218,26 @@ btn.addEventListener('click', whereAmI);
 
 // Async/await version of whereAmI function
 const whereAmIAsync = async () => {
-  const position = await getPosition();
-  const { latitude, longitude } = position.coords;
+  try {
+    const position = await getPosition();
+    const { latitude, longitude } = position.coords;
 
-  const geoLocationResp = await fetch(
-    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
-  const geoLocation = await geoLocationResp.json();
-  const { countryName } = geoLocation;
+    const geoLocationResp = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+    if (!geoLocationResp.ok) throw new Error('No luck getting location');
 
-  const countryResp = await fetch(`https://restcountries.com/v2/name/${countryName}`);
-  const country = await countryResp.json();
-  renderCountry(country[0]); // restcountries returns array, this is why first item
+    const geoLocation = await geoLocationResp.json();
+    const { countryName } = geoLocation;
+
+    const countryResp = await fetch(`https://restcountries.com/v2/name/${countryName}`);
+    if (!countryResp.ok) throw new Error('No luck getting country');
+
+    const country = await countryResp.json();
+    renderCountry(country[0]); // restcountries returns array, this is why first item
+  } catch (e) {
+    console.error(e);
+    renderError(`Something went wrong. ${e.message}`);
+  }
 };
 
 whereAmIAsync();
