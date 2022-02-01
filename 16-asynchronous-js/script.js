@@ -199,6 +199,39 @@ const get3Countries = async (c1, c2, c3) => {
 
 get3Countries('united kingdom', 'sweden', 'canada');
 
+// 9. Promise.all, Promise.race, Promise.any, Promise.allSettled
+// Combine all promises and pack data into array. The combination is rejected if any internal is rejected
+Promise.all([
+  Promise.resolve('Fulfilled'),
+  Promise.reject('Rejected'), // It will rejected the whole combination of promises
+  Promise.resolve('Fulfilled - 2')
+]).then(data => console.warn('Promise.all', data))
+  .catch(err => console.warn('Promise.all rejected', err));
+
+// Promise.allSettled ES2020 - returns all promises result (no matter - fulfilled or rejected)
+Promise.allSettled([
+  Promise.resolve('Fulfilled'),
+  Promise.reject('Rejected'),
+  Promise.resolve('Fulfilled - 2')
+]).then(data => console.warn('Promise.allSettled', data));
+
+// Promise.race - gets the fastest promise received (settled) value (either fulfilled or rejected)
+Promise.race([
+  Promise.reject('Rejected'), // It wins, any settled promise is fine for Promise.race()
+  Promise.resolve('Fulfilled'),
+  Promise.resolve('Fulfilled - 2')
+]).then(data => console.warn('Promise.race', data))
+  .catch(err => console.warn('Promise.race rejected', err));
+
+// Promise.any ES2021 - like .race, but ignores rejected promises. The fastest fulfilled promise wins
+Promise.any([
+  Promise.reject('Rejected'), // It will be ignored since it is rejected
+  Promise.resolve('Fulfilled'), // this wins
+  Promise.resolve('Fulfilled - 2')
+]).then(data => console.warn('Promise.any', data))
+  .catch(err => console.warn('Promise.any rejected', err));
+
+
 ///////////////////////////////////////
 // Coding Challenge #1
 
