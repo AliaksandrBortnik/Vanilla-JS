@@ -176,6 +176,29 @@ const getPosition = () => {
     });
 }
 
+// 8. Running promises in parallel
+const get3Countries = async (c1, c2, c3) => {
+  try {
+    // Classical way: one by one. It is not parallel.
+    // const [country1] = await getJson(`https://restcountries.com/v2/name/${c1}`, 'Country data is not received');
+    // const [country2] = await getJson(`https://restcountries.com/v2/name/${c2}`, 'Country data is not received');
+    // const [country3] = await getJson(`https://restcountries.com/v2/name/${c3}`, 'Country data is not received');
+    // console.log(country1, country2, country3);
+
+    // Send request in parallel
+    const [country1, country2, country3] = await Promise.all([
+      getJson(`https://restcountries.com/v2/name/${c1}`, 'Country data is not received'),
+      getJson(`https://restcountries.com/v2/name/${c2}`, 'Country data is not received'),
+      getJson(`https://restcountries.com/v2/name/${c3}`, 'Country data is not received')
+    ]);
+    console.warn(country1[0], country2[0], country3[0]);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+get3Countries('united kingdom', 'sweden', 'canada');
+
 ///////////////////////////////////////
 // Coding Challenge #1
 
