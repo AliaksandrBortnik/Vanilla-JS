@@ -234,13 +234,32 @@ const whereAmIAsync = async () => {
 
     const country = await countryResp.json();
     renderCountry(country[0]); // restcountries returns array, this is why first item
-  } catch (e) {
-    console.error(e);
-    renderError(`Something went wrong. ${e.message}`);
+    return country[0];
+  } catch (err) {
+    console.error(err);
+    renderError(`Something went wrong. ${err.message}`);
+    throw err; // reject promise returned from async function
   }
 };
 
-whereAmIAsync();
+console.log('1: Before whereAmIAsync call');
+whereAmIAsync()
+  .then(country => console.log(country))
+  .catch(err => console.log('1: Catch:', err))
+  .finally(_ => console.log('1: Finished whereAmIAsync call'));
+
+// Rewrite previous thing, to stop mixing the old way with a modern async/await approach on the top level
+// (also possible to use top-level await ES2022):
+(async function() {
+  console.log('2: Before whereAmIAsync call');
+  try {
+    const country = await whereAmIAsync();
+    console.log(country);
+  } catch (err) {
+    console.log('2: Catch:', err)
+  }
+  console.log('2: Finished whereAmIAsync call')
+})();
 
 // whereAmI(52.508, 13.381);
 // whereAmI(19.037, 72.873);
