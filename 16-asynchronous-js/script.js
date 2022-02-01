@@ -335,7 +335,7 @@ TEST DATA: Images in the img folder. Test the error handler by passing a wrong i
 // In case there is an error loading the image ('error' event), reject the promise.
 const imgContainer = document.querySelector('.images');
 
-const createImage = (imgPath) => {
+const createImage = async (imgPath) => {
   return new Promise((resolve, reject) => {
     const img = document.createElement('img');
     img.src = imgPath;
@@ -372,29 +372,37 @@ const createImage = (imgPath) => {
 //   })
 //   .catch(console.error);
 
-// Rewrite using async/await syntax
-const renderImage = async (imgPath) => {
-  const img = await createImage(imgPath);
-  await wait(2);
-  img.style.display = 'none';
-}
 
-const showImages = async () => {
-  try {
-    await renderImage('./img/img-5.jpg');
-    await renderImage('./img/img-2.jpg');
-  } catch (e) {
-    console.error(e);
-  }
+///////////////////////////////////////
+// Coding Challenge #3
+
+// Write an async function 'loadNPause' that recreates Coding Challenge #2 using async/await
+// const renderImage = async (imgPath) => {
+//   const img = await createImage(imgPath);
+//   await wait(2);
+//   img.style.display = 'none';
+// }
+//
+// const loadNPause = async () => {
+//   try {
+//     await renderImage('./img/img-1.jpg');
+//     await renderImage('./img/img-2.jpg');
+//   } catch (e) {
+//     console.error(e);
+//   }
+// };
+//
+// loadNPause();
+
+
+// 1. Create an async function 'loadAll' that receives an array of image paths 'imgArr';
+const loadAll = async (imgArr) => {
+  // 2. Use .map to loop over the array, to load all the images with the 'createImage' function (call the resulting array 'imgs')
+  const imgs = imgArr.map(img => createImage(img));
+  // 4. Use a promise combinator function to actually get the images from the array
+  const images = await Promise.all(imgs);
+  // 5. Add the 'parallel' class to all the images (it has some CSS styles).
+  images.forEach(img => img.classList.add('parallel'));
 };
 
-showImages();
-
-
-
-
-
-
-
-
-
+loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']);
