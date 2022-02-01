@@ -216,6 +216,23 @@ const whereAmI = function () { // Version 2. Using promisified GeoLocation call 
 
 btn.addEventListener('click', whereAmI);
 
+// Async/await version of whereAmI function
+const whereAmIAsync = async () => {
+  const position = await getPosition();
+  const { latitude, longitude } = position.coords;
+
+  const geoLocationResp = await fetch(
+    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+  const geoLocation = await geoLocationResp.json();
+  const { countryName } = geoLocation;
+
+  const countryResp = await fetch(`https://restcountries.com/v2/name/${countryName}`);
+  const country = await countryResp.json();
+  renderCountry(country[0]); // restcountries returns array, this is why first item
+};
+
+whereAmIAsync();
+
 // whereAmI(52.508, 13.381);
 // whereAmI(19.037, 72.873);
 // whereAmI(-33.933, 18.474);
