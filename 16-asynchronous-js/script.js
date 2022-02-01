@@ -246,33 +246,48 @@ const createImage = (imgPath) => {
   });
 };
 
-let lastLoadedImg;
+// let lastLoadedImg;
+//
+// createImage('./img/img-1.jpg')
+//   // 2. Comsume the promise using .then and also add an error handler;
+//   // 3. After the image has loaded, pause execution for 2 seconds using the wait function we created earlier;
+//   .then(img => {
+//     lastLoadedImg = img;
+//     return wait(2);
+//   })
+//   // 4. After the 2 seconds have passed, hide the current image (set display to 'none'), and load a second image
+//   .then(_ => {
+//     lastLoadedImg.style.display = 'none';
+//     return createImage('./img/img-2.jpg');
+//   })
+//   // 5. After the second image has loaded, pause execution for 2 seconds again;
+//   .then(img => {
+//     lastLoadedImg = img;
+//     return wait(2);
+//   })
+//   // 6. After the 2 seconds have passed, hide the current image.
+//   .then(_ => {
+//     lastLoadedImg.style.display = 'none';
+//   })
+//   .catch(console.error);
 
-createImage('./img/img-1.jpg')
-  // 2. Comsume the promise using .then and also add an error handler;
-  // 3. After the image has loaded, pause execution for 2 seconds using the wait function we created earlier;
-  .then(img => {
-    lastLoadedImg = img;
-    return wait(2);
-  })
-  // 4. After the 2 seconds have passed, hide the current image (set display to 'none'), and load a second image
-  .then(_ => {
-    lastLoadedImg.style.display = 'none';
-    return createImage('./img/img-2.jpg');
-  })
-  // 5. After the second image has loaded, pause execution for 2 seconds again;
-  .then(img => {
-    lastLoadedImg = img;
-    return wait(2);
-  })
-  // 6. After the 2 seconds have passed, hide the current image.
-  .then(_ => {
-    lastLoadedImg.style.display = 'none';
-  })
-  .catch(console.error);
+// Rewrite using async/await syntax
+const renderImage = async (imgPath) => {
+  const img = await createImage(imgPath);
+  await wait(2);
+  img.style.display = 'none';
+}
 
+const showImages = async () => {
+  try {
+    await renderImage('./img/img-5.jpg');
+    await renderImage('./img/img-2.jpg');
+  } catch (e) {
+    console.error(e);
+  }
+};
 
-
+showImages();
 
 
 
