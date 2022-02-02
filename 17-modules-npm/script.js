@@ -52,8 +52,8 @@ const getLastPost = async function() {
   };
 }
 
-const lastPost = await getLastPost(); // Previously we were using .then()
-console.log(lastPost)
+// const lastPost = await getLastPost(); // Previously we were using .then()
+// console.log(lastPost)
 
 // 6. Old-style module pattern. Used before ES modules
 // Module encapsulates private data and stuff and exposes public API
@@ -83,3 +83,18 @@ const ShoppingCart = (function() {
 
 ShoppingCart.addToCart('apple', 2);
 console.log(ShoppingCart)
+
+import {cloneDeep} from 'lodash-es';
+
+const state = {
+  cart: [
+    {product:'pizza', quantity: 1},
+    {product: 'pasta', quantity: 2}
+  ]
+};
+
+const clonedState = cloneDeep(state);
+
+clonedState.cart[0].quantity = 3;
+console.log(clonedState);
+console.log(state);
