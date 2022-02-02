@@ -4,13 +4,12 @@
   "description": "",
   "main": "script.js",
   "scripts": {
-    "start": "parcel index.html"
+    "dev": "parcel index.html"
   },
   "author": "Alex Bortnik",
   "license": "ISC",
   "dependencies": {
-    "leaflet": "^1.7.1",
-    "lodash-es": "^4.17.21"
+    "leaflet": "^1.7.1"
   },
   "devDependencies": {
     "parcel": "^2.2.1"
