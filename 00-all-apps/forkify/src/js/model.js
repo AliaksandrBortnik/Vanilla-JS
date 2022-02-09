@@ -1,14 +1,15 @@
+import {API_URL} from "./config";
+import {getJson} from "./helpers";
+
 export const state = {
   recipe: {}
 };
 
 export const loadRecipe = async (recipeId) => {
   try {
-    const response = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`);
-    const data = await response.json();
-    if (!response.ok) throw new Error(`No luck getting data. ${data.message}. ${data.status}`);
-
+    const data = await getJson(`${API_URL}/recipes/${recipeId}`);
     const { recipe: recipePayload } = data.data;
+
     state.recipe = {
       id: recipePayload.id,
       title: recipePayload.title,
