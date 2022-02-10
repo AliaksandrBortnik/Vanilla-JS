@@ -1,10 +1,12 @@
-import {API_URL} from "./config";
+import {API_URL, SEARCH_RESULT_PAGE_SIZE} from "./config";
 import {getJson} from "./helpers";
 
 export const state = {
   recipe: {},
   search: {
     results: [],
+    resultsPerPage: SEARCH_RESULT_PAGE_SIZE,
+    page: 1,
     query: ''
   }
 };
@@ -44,4 +46,12 @@ export const loadSearchResults = async (query) => {
   } catch (err) {
     console.error('Error happened in loadSearchResults');
   }
+};
+
+export const getSearchResultByPage = (page = state.search.page) => {
+  state.search.page = page;
+  const pageSize = state.search.resultsPerPage;
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  return state.search.results.slice(startIndex, endIndex);
 };

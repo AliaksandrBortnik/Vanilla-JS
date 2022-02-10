@@ -4,7 +4,8 @@ import * as model from "./model";
 import {recipeView} from "./views/recipeView";
 import {searchView} from "./views/searchView";
 import {resultView} from "./views/resultView";
-import {state} from "./model";
+import {getSearchResultByPage, state} from "./model";
+import {paginationView} from "./views/paginationView";
 
 // HRM for Parcel
 if (module.hot) {
@@ -34,15 +35,22 @@ const controlSearchResults = async () => {
     await model.loadSearchResults(query);
 
     searchView.clearInput();
-    resultView.render(state.search.results);
+    resultView.render(getSearchResultByPage());
+    paginationView.render(state.search);
   } catch (err) {
     console.error(err);
   }
 };
 
+const controlPagination = (gotoPage) => {
+  resultView.render(getSearchResultByPage(gotoPage));
+  paginationView.render(state.search);
+};
+
 const init = () => {
   recipeView.addRenderHandler(controlRecipes);
   searchView.addSearchHandler(controlSearchResults);
+  paginationView.addClickHandler(controlPagination);
 };
 
 init();
