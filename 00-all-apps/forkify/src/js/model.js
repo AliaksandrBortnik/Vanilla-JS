@@ -2,7 +2,11 @@ import {API_URL} from "./config";
 import {getJson} from "./helpers";
 
 export const state = {
-  recipe: {}
+  recipe: {},
+  search: {
+    results: [],
+    query: ''
+  }
 };
 
 export const loadRecipe = async (recipeId) => {
@@ -26,3 +30,20 @@ export const loadRecipe = async (recipeId) => {
     console.error(err);
   }
 };
+
+export const loadSearchResults = async (query) => {
+  try {
+    const data = await getJson(`${API_URL}/recipes?search=${query}`);
+
+    state.search.results = data.data.recipes.map(recipe => ({
+      id: recipe.id,
+      title: recipe.title,
+      publisher: recipe.publisher,
+      imageUrl: recipe.image_url
+    }));
+  } catch (err) {
+    console.error('Error happened in loadSearchResults');
+  }
+};
+
+loadSearchResults('pizza');
