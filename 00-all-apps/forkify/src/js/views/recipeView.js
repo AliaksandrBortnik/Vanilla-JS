@@ -5,12 +5,52 @@ class RecipeView {
   #parentElement = document.querySelector('.recipe');
   #recipe;
 
+  #message = 'Start by searching for a recipe or an ingredient. Have fun!';
+  #errorMessage = 'Something went wrong. Pls, try again';
+
   render(recipe) {
     this.#recipe = recipe;
     const template = this.#getTemplate(this.#recipe);
 
     this.#clearView();
     this.#parentElement.insertAdjacentHTML('beforeend', template);
+  }
+
+  renderError(message = this.#errorMessage) {
+    const template = `
+      <div class="error">
+        <div>
+          <svg>
+            <use href="${icons}#icon-alert-triangle"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div>
+    `;
+
+    this.#clearView();
+    this.#parentElement.insertAdjacentHTML('beforeend', template);
+  }
+
+  renderMessage(message = this.#message) {
+    const template = `
+      <div class="message">
+        <div>
+          <svg>
+            <use href="${icons}#icon-smile"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div>
+    `;
+
+    this.#clearView();
+    this.#parentElement.insertAdjacentHTML('beforeend', template);
+  }
+
+  addRenderHandler(handler) {
+    ['load', 'hashchange'].forEach(event =>
+      window.addEventListener(event, handler));
   }
 
   showSpinner() {
@@ -21,7 +61,7 @@ class RecipeView {
       </svg>
     </div>
   `;
-    this.#parentElement.innerHTML = '';
+    this.#clearView();
     this.#parentElement.insertAdjacentHTML('afterbegin', template);
   };
 

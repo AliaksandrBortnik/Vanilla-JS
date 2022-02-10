@@ -3,6 +3,10 @@ import 'regenerator-runtime'; // Polyfill for async/await
 import * as model from "./model";
 import {recipeView} from "./views/recipeView";
 
+const init = () => {
+  recipeView.addRenderHandler(controlRecipes);
+};
+
 const controlRecipes = async function () {
   try {
     const recipeId = location.hash.slice(1);
@@ -12,9 +16,8 @@ const controlRecipes = async function () {
     await model.loadRecipe(recipeId);
     recipeView.render(model.state.recipe);
   } catch (err) {
-    alert(err);
+    recipeView.renderError('No recipes found for your query. Please try again!');
   }
 };
 
-['load', 'hashchange'].forEach(event =>
-  window.addEventListener(event, controlRecipes));
+init();
