@@ -3,6 +3,13 @@ import 'regenerator-runtime'; // Polyfill for async/await
 import * as model from "./model";
 import {recipeView} from "./views/recipeView";
 import {searchView} from "./views/searchView";
+import {resultView} from "./views/resultView";
+import {state} from "./model";
+
+// HRM for Parcel
+if (module.hot) {
+  module.hot.accept();
+}
 
 const controlRecipes = async () => {
   try {
@@ -19,12 +26,15 @@ const controlRecipes = async () => {
 
 const controlSearchResults = async () => {
   try {
+    resultView.showSpinner();
+
     const query = searchView.getQuery();
     if (!query) return;
 
     await model.loadSearchResults(query);
 
     searchView.clearInput();
+    resultView.render(state.search.results);
   } catch (err) {
     console.error(err);
   }

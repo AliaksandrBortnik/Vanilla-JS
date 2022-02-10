@@ -45,5 +45,3 @@ export const loadSearchResults = async (query) => {
     console.error('Error happened in loadSearchResults');
   }
 };
-
-loadSearchResults('pizza');
