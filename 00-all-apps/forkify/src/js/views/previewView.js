@@ -2,12 +2,8 @@ import icons from 'url:../../img/icons.svg';
 import {BaseView} from "./baseView";
 
 export class PreviewView extends BaseView {
-  constructor(parentElement) {
-    super(
-      parentElement,
-      '',
-      'No luck getting recipes!'
-    );
+  constructor(parentElement, successMessage, errorMessage) {
+    super(parentElement, successMessage, errorMessage);
   }
 
   _getTemplate() {
