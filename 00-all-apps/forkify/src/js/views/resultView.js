@@ -19,7 +19,7 @@ class ResultView extends BaseView {
     // TODO: add class on selected recipe. preview__link--active
     return `
       <li class="preview">
-        <a class="preview__link" href="${recipe.id}">
+        <a class="preview__link" href="#${recipe.id}">
           <figure class="preview__fig">
             <img src="${recipe.imageUrl}" alt="${recipe.title}" />
           </figure>
