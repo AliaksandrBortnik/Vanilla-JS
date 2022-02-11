@@ -70,11 +70,25 @@ export const updateServings = (targetServings) => {
   state.recipe.servings = targetServings;
 };
 
+const saveBookmarks = () => {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+}
+
+// TODO: restore bookmarks on load
+const restoreBookmarks = () => {
+  const bookmarksStorage = localStorage.getItem('bookmarks');
+  if (!bookmarksStorage) return;
+
+  state.bookmarks = JSON.parse(bookmarksStorage);
+}
+
 export const addBookmark = (recipe) => {
   state.bookmarks.push(recipe);
   if (recipe.id === state.recipe.id) {
     state.recipe.bookmarked = true;
   }
+
+  saveBookmarks();
 };
 
 export const deleteBookmark = (recipeId) => {
@@ -83,4 +97,6 @@ export const deleteBookmark = (recipeId) => {
   if (state.recipe.id === recipeId) {
     state.recipe.bookmarked = false;
   }
+
+  saveBookmarks();
 };
