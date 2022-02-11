@@ -43,6 +43,8 @@ export const loadSearchResults = async (query) => {
       publisher: recipe.publisher,
       imageUrl: recipe.image_url
     }));
+
+    state.search.page = 1;
   } catch (err) {
     console.error('Error happened in loadSearchResults');
   }
