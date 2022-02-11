@@ -16,6 +16,14 @@ class RecipeView extends BaseView {
     ['load', 'hashchange'].forEach(event => window.addEventListener(event, handler));
   }
 
+  addUpdateServingsHandler(handler) {
+    this._parentElement.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn--update-servings');
+      if (!btn) return;
+      handler(+btn.dataset.value);
+    });
+  }
+
   _getTemplate() {
     return `
       <figure class="recipe__fig">
@@ -41,12 +49,12 @@ class RecipeView extends BaseView {
           <span class="recipe__info-text">servings</span>
 
           <div class="recipe__info-buttons">
-            <button class="btn--tiny btn--increase-servings">
+            <button data-value="-1" class="btn--tiny btn--update-servings">
               <svg>
                 <use href="${icons}#icon-minus-circle"></use>
               </svg>
             </button>
-            <button class="btn--tiny btn--increase-servings">
+            <button data-value="1" class="btn--tiny btn--update-servings">
               <svg>
                 <use href="${icons}#icon-plus-circle"></use>
               </svg>
