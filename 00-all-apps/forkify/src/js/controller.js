@@ -18,6 +18,7 @@ const controlRecipes = async () => {
     if (!recipeId) return;
 
     recipeView.showSpinner();
+    resultView.update(model.getSearchResultByPage());
     await model.loadRecipe(recipeId);
     recipeView.render(model.state.recipe);
   } catch (err) {

@@ -13,9 +13,6 @@ export class BaseView {
   }
 
   update(data) {
-    if (!data || Array.isArray(data) && !data.length)
-      return this.renderError();
-
     this._data = data;
     const template = this._getTemplate(this._data);
 
