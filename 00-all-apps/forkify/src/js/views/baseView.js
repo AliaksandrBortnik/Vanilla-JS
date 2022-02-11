@@ -12,6 +12,34 @@ export class BaseView {
     this._errorMessage = errorMessage || 'Something went wrong. Please, try again';
   }
 
+  update(data) {
+    if (!data || Array.isArray(data) && !data.length)
+      return this.renderError();
+
+    this._data = data;
+    const template = this._getTemplate(this._data);
+
+    const newDOM = document.createRange().createContextualFragment(template);
+    const newElements = [...newDOM.querySelectorAll('*')];
+    const currentElements = [...this._parentElement.querySelectorAll('*')];
+
+    newElements.forEach((newEl, i) => {
+      const currentEl = currentElements[i];
+
+      // Sync changed text
+      if (!newEl.isEqualNode(currentEl) && newEl.firstChild?.nodeValue.trim() !== '') {
+        currentEl.textContent = newEl.textContent;
+      }
+
+      // Sync changed attributes
+      if (!newEl.isEqualNode(currentEl)) {
+        [...newEl.attributes].forEach(attribute => {
+          currentEl.setAttribute(attribute.name, attribute.value);
+        })
+      }
+    });
+  }
+
   render(data) {
     if (!data || Array.isArray(data) && !data.length) return this.renderError();
 

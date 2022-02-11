@@ -50,7 +50,8 @@ const controlPagination = (gotoPage) => {
 const controlServings = (incrementServing) => {
   const updatedServings = model.state.recipe.servings + incrementServing;
   model.updateServings(updatedServings);
-  recipeView.render(state.recipe);
+  // recipeView.render(state.recipe);
+  recipeView.update(model.state.recipe)
 };
 
 const init = () => {
