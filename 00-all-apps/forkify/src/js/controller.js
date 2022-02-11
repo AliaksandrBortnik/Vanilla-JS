@@ -3,9 +3,10 @@ import 'regenerator-runtime'; // Polyfill for async/await
 import * as model from "./model";
 import {recipeView} from "./views/recipeView";
 import {searchView} from "./views/searchView";
-import {resultView} from "./views/resultView";
+import resultView from "./views/resultView";
 import {getSearchResultByPage, state} from "./model";
 import {paginationView} from "./views/paginationView";
+import bookmarkView from "./views/bookmarkView";
 
 // HRM for Parcel
 if (module.hot) {
@@ -19,7 +20,10 @@ const controlRecipes = async () => {
 
     recipeView.showSpinner();
     resultView.update(model.getSearchResultByPage());
+    bookmarkView.update(model.state.bookmarks);
+
     await model.loadRecipe(recipeId);
+
     recipeView.render(model.state.recipe);
   } catch (err) {
     recipeView.renderError('No recipes found for your query. Please try again!');
@@ -51,8 +55,7 @@ const controlPagination = (gotoPage) => {
 const controlServings = (incrementServing) => {
   const updatedServings = model.state.recipe.servings + incrementServing;
   model.updateServings(updatedServings);
-  // recipeView.render(state.recipe);
-  recipeView.update(model.state.recipe)
+  recipeView.update(model.state.recipe); // recipeView.render(state.recipe);
 };
 
 const controlAddBookmarks = () => {
@@ -61,7 +64,9 @@ const controlAddBookmarks = () => {
   } else {
     model.deleteBookmark(model.state.recipe.id);
   }
+
   recipeView.update(model.state.recipe);
+  bookmarkView.render(model.state.bookmarks);
 };
 
 const init = () => {
