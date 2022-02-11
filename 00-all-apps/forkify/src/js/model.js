@@ -8,7 +8,8 @@ export const state = {
     resultsPerPage: SEARCH_RESULT_PAGE_SIZE,
     page: 1,
     query: ''
-  }
+  },
+  bookmarks: []
 };
 
 export const loadRecipe = async (recipeId) => {
@@ -26,6 +27,9 @@ export const loadRecipe = async (recipeId) => {
       cookingTime: recipePayload.cooking_time,
       servings: recipePayload.servings
     };
+
+    // Set bookmarked when reloading all recipes from API
+    state.recipe.bookmarked = state.bookmarks.some(bmk => bmk.id === recipeId);
 
     console.log('Received recipe data', state.recipe);
   } catch (err) {
@@ -64,4 +68,19 @@ export const updateServings = (targetServings) => {
   });
 
   state.recipe.servings = targetServings;
+};
+
+export const addBookmark = (recipe) => {
+  state.bookmarks.push(recipe);
+  if (recipe.id === state.recipe.id) {
+    state.recipe.bookmarked = true;
+  }
+};
+
+export const deleteBookmark = (recipeId) => {
+  state.bookmarks = state.bookmarks.filter(bmk => bmk.id !== recipeId);
+
+  if (state.recipe.id === recipeId) {
+    state.recipe.bookmarked = false;
+  }
 };
